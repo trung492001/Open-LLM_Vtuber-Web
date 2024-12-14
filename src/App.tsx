@@ -23,10 +23,8 @@ const App: React.FC = () => {
               <Box {...layoutStyles.canvas}>
                 <Canvas 
                   backgroundUrl="/bg/ceiling-window-room-night.jpeg"
+                  subtitleText="Hi, I'm some random AI VTuber. Who the hell are ya? Ahh, you must be amazed by my awesomeness, right? right?"
                 />
-                <Box {...layoutStyles.subtitle}>
-                  {/* Subtitle */}
-                </Box>
               </Box>
 
               <Box {...layoutStyles.footer}>

@@ -25,7 +25,7 @@ export const sidebarStyles = {
         container: {
             flex: 1,
             px: 3,
-            py: 2,
+            py: 0,
             bg: 'whiteAlpha.100',
             borderRadius: '12px',
             border: '1px solid',
