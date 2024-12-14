@@ -1,19 +1,43 @@
-import {useState} from 'react'
-import './App.css'
+import React from 'react';
+import { Box, Flex } from '@chakra-ui/react';
+import { defaultSystem } from '@chakra-ui/react';
+import Canvas from './components/canvas/canvas';
+import Sidebar from './components/sidebar/sidebar';
+import Footer from './components/footer/footer';
+import { StateProvider } from './context/state-context';
+import { ChakraProvider } from '@chakra-ui/react';
+import { layoutStyles } from './layout';
+import WebSocketHandler from './components/websocket-handler';
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: React.FC = () => {
   return (
-    <div className="h-screen w-screen bg-gray-400">
-      <div className="p-2 flex gap-10 items-start">
-        <div className="w-24 text-center bg-white rounded-lg hover:bg-gray-100 cursor-pointer">
-          <h1>Connected</h1>
-        </div>
+    <ChakraProvider value={defaultSystem}>
+      <StateProvider>
+        <WebSocketHandler>
+          <Flex {...layoutStyles.appContainer}>
+            <Box {...layoutStyles.sidebar}>
+              <Sidebar />
+            </Box>
 
-      </div>
-    </div>
-  )
-}
+            <Box {...layoutStyles.mainContent}>
+              <Box {...layoutStyles.canvas}>
+                <Canvas 
+                  backgroundUrl="/bg/ceiling-window-room-night.jpeg"
+                />
+                <Box {...layoutStyles.subtitle}>
+                  {/* Subtitle */}
+                </Box>
+              </Box>
 
-export default App
+              <Box {...layoutStyles.footer}>
+                <Footer />
+              </Box>
+            </Box>
+          </Flex>
+        </WebSocketHandler>
+      </StateProvider>
+    </ChakraProvider>
+  );
+};
+
+export default App;
