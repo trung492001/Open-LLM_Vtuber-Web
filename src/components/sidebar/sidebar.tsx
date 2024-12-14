@@ -1,4 +1,6 @@
-import { Box, VStack, Button, useDisclosure } from '@chakra-ui/react';
+import {
+  Box, VStack, Button, useDisclosure,
+} from '@chakra-ui/react';
 import { FiSettings, FiColumns } from 'react-icons/fi';
 import { sidebarStyles } from './sidebar-styles';
 import SettingUI from './setting-ui';
@@ -6,7 +8,7 @@ import ConfigCard from './config-card';
 import ChatHistoryPanel from './chat-history-panel';
 import SystemLogPanel from './system-log-panel';
 
-const Sidebar = () => {
+function Sidebar() {
   const { open, onOpen, onClose } = useDisclosure();
 
   return (
@@ -16,9 +18,8 @@ const Sidebar = () => {
           <Button>
             <FiColumns />
           </Button>
-          <Button
-            onClick={onOpen}
->
+
+          <Button onClick={onOpen}>
             <FiSettings />
           </Button>
         </Box>
@@ -33,6 +34,6 @@ const Sidebar = () => {
       <SettingUI isOpen={open} onClose={onClose} />
     </VStack>
   );
-};
+}
 
 export default Sidebar;

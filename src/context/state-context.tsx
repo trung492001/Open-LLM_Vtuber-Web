@@ -12,7 +12,7 @@ export const StateProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [state, setState] = useState('idle');
 
   return (
-    <StateContext.Provider value={{ state, setState}}>
+    <StateContext.Provider value={{ state, setState }}>
       {children}
     </StateContext.Provider>
   );

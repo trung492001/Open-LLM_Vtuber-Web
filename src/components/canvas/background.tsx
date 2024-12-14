@@ -7,19 +7,17 @@ interface BackgroundProps {
   children?: React.ReactNode;
 }
 
-const Background: React.FC<BackgroundProps> = ({ imageUrl, children }) => {
-  return (
-    <Box {...canvasStyles.background.container}>
-      {imageUrl && (
-        <Image
-          src={imageUrl}
-          alt="Background"
-            {...canvasStyles.background.image}
-            />
-      )}
-      {children}
-    </Box>
-  );
-};
+const Background: React.FC<BackgroundProps> = ({ imageUrl, children }) => (
+  <Box {...canvasStyles.background.container}>
+    {imageUrl && (
+    <Image
+      src={imageUrl}
+      alt="Background"
+      {...canvasStyles.background.image}
+    />
+    )}
+    {children}
+  </Box>
+);
 
 export default Background;

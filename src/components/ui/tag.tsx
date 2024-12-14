@@ -1,5 +1,5 @@
-import { Tag as ChakraTag } from "@chakra-ui/react"
-import * as React from "react"
+import { Tag as ChakraTag } from '@chakra-ui/react';
+import * as React from 'react';
 
 export interface TagProps extends ChakraTag.RootProps {
   startElement?: React.ReactNode
@@ -9,7 +9,7 @@ export interface TagProps extends ChakraTag.RootProps {
 }
 
 export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
-  function Tag(props, ref) {
+  (props, ref) => {
     const {
       startElement,
       endElement,
@@ -17,7 +17,7 @@ export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
       closable = !!onClose,
       children,
       ...rest
-    } = props
+    } = props;
 
     return (
       <ChakraTag.Root ref={ref} {...rest}>
@@ -34,6 +34,6 @@ export const Tag = React.forwardRef<HTMLSpanElement, TagProps>(
           </ChakraTag.EndElement>
         )}
       </ChakraTag.Root>
-    )
+    );
   },
-)
+);

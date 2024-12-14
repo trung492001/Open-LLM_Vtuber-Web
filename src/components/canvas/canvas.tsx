@@ -1,6 +1,6 @@
+import { Box } from '@chakra-ui/react';
 import Background from './background';
 import Subtitle from './subtitle';
-import { Box } from '@chakra-ui/react';
 import { canvasStyles } from './canvas-styles';
 
 interface CanvasProps {
