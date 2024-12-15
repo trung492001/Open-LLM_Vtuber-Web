@@ -6,9 +6,15 @@ import { IoHandRightSharp } from 'react-icons/io5';
 import { InputGroup } from '@/components/ui/input-group';
 import { footerStyles } from './footer-styles';
 import AIStateIndicator from './ai-state-indicator';
+import { useTextInput } from '@/hooks/use-text-input';
 
 function Footer() {
   const styles = footerStyles.footer;
+  const {
+    inputValue,
+    handleInputChange,
+    handleKeyPress,
+  } = useTextInput();
 
   return (
     <Box {...styles.container}>
@@ -45,6 +51,9 @@ function Footer() {
               <BsPaperclip size="24" />
             </IconButton>
             <Input
+              value={inputValue}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyPress}
               placeholder="Type your message..."
               {...styles.input}
             />

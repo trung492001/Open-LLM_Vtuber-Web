@@ -43,7 +43,7 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
   };
 
   const { sendMessage, wsState, reconnect } = useWebSocket({
-    url: 'ws://127.0.0.1:1017/client-ws',
+    url: 'ws://127.0.0.1:12393/client-ws',
     onMessage: handleWebSocketMessage,
     onOpen: () => {
       console.log('WebSocket connection opened');

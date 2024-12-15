@@ -3,22 +3,20 @@ import * as PIXI from 'pixi.js';
 import { Live2DModel } from 'pixi-live2d-display';
 import { AppContext } from '@/context/app-context';
 
-const isElectron = () => {
-  return (window as any).electronAPI !== undefined;
-};
+const pointerInteractionEnabled = false;
 
-function setExpression(model: Live2DModel, expressionIndex: number) {
-  expressionIndex = parseInt(expressionIndex.toString());
-  if (
-    model &&
-    model.internalModel &&
-    model.internalModel.motionManager &&
-    model.internalModel.motionManager.expressionManager
-  ) {
-    model.internalModel.motionManager.expressionManager.setExpression(expressionIndex);
-    console.info(`>> [x] -> Expression set to: (${expressionIndex})`);
-  }
-}
+// function setExpression(model: Live2DModel, expressionIndex: number) {
+//   expressionIndex = parseInt(expressionIndex.toString());
+//   if (
+//     model &&
+//     model.internalModel &&
+//     model.internalModel.motionManager &&
+//     model.internalModel.motionManager.expressionManager
+//   ) {
+//     model.internalModel.motionManager.expressionManager.setExpression(expressionIndex);
+//     console.info(`>> [x] -> Expression set to: (${expressionIndex})`);
+//   }
+// }
 
 function makeDraggable(model: Live2DModel) {
   model.interactive = true;
@@ -48,24 +46,6 @@ function makeDraggable(model: Live2DModel) {
 
   model.on('pointerupoutside', () => {
     isDragging = false;
-  });
-}
-
-function setupMouseEvents(model: Live2DModel) {
-  model.on("pointerover", () => {
-    (window as any).electronAPI?.setIgnoreMouseEvents(false);
-  });
-
-  model.on("pointerout", () => {
-    (window as any).electronAPI?.setIgnoreMouseEvents(true);
-  });
-
-  window.addEventListener("mousedown", (e: MouseEvent) => {
-    if (e.button === 2) {
-      const x = e.screenX;
-      const y = e.screenY;
-      (window as any).electronAPI?.showContextMenu(x, y);
-    }
   });
 }
 
@@ -145,8 +125,13 @@ export const Live2D: React.FC = () => {
       }
 
       try {
+        const options = {
+          autoInteract: pointerInteractionEnabled,
+          autoUpdate: true,
+        };
+
         const models = await Promise.all([
-          Live2DModel.from(modelInfo.url),
+          Live2DModel.from(modelInfo.url, options),
         ]);
 
         const l2dModel = models[0];
@@ -159,10 +144,6 @@ export const Live2D: React.FC = () => {
         l2dModel.scale.set(Math.min(scaleX, scaleY));
 
         makeDraggable(l2dModel);
-
-        if (isElectron()) {
-          setupMouseEvents(l2dModel);
-        }
 
         l2dModel.on('added', () => {
           l2dModel.update(PIXI.Ticker.shared.deltaTime);
