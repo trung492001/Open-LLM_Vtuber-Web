@@ -45,4 +45,29 @@ export const canvasStyles = {
       whiteSpace: 'pre-wrap',
     },
   },
+  wsStatus: {
+    container: {
+      position: 'absolute',
+      top: '20px',
+      left: '20px',
+      zIndex: 2,
+      padding: '8px 16px',
+      borderRadius: '20px',
+      fontSize: '14px',
+      fontWeight: 'medium',
+      color: 'white',
+      transition: 'all 0.2s',
+      variants: {
+        connected: {
+          backgroundColor: 'green.500',
+        },
+        disconnected: {
+          backgroundColor: 'red.500', 
+        },
+        connecting: {
+          backgroundColor: 'yellow.500',
+        }
+      }
+    }
+  }
 };
