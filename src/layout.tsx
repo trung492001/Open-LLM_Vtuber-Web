@@ -28,6 +28,7 @@ export const layoutStyles = {
   canvas: {
     flex: 1,
     position: 'relative',
+    pointerEvents: 'auto',
   },
 
   subtitle: {

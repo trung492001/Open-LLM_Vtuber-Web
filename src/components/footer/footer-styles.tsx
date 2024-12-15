@@ -52,9 +52,13 @@ export const footerStyles = {
       alignItems: 'center',
       justifyContent: 'center',
       boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+      overflow: 'hidden',
     },
     text: {
-      fontSize: 'sm',
+      fontSize: '12px',
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
     },
   },
 };

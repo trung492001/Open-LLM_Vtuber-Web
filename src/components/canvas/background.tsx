@@ -1,23 +1,26 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Image } from '@chakra-ui/react';
 import { canvasStyles } from './canvas-styles';
+import { AppContext } from '@/context/app-context';
 
-interface BackgroundProps {
-  imageUrl?: string;
-  children?: React.ReactNode;
-}
+const Background: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+  const context = useContext(AppContext);
+  
+  if (!context) return null;
+  const { backgroundUrl } = context;
 
-const Background: React.FC<BackgroundProps> = ({ imageUrl, children }) => (
-  <Box {...canvasStyles.background.container}>
-    {imageUrl && (
-    <Image
-      src={imageUrl}
-      alt="Background"
-      {...canvasStyles.background.image}
-    />
-    )}
-    {children}
-  </Box>
-);
+  return (
+    <Box {...canvasStyles.background.container}>
+      {backgroundUrl && (
+        <Image
+          src={backgroundUrl}
+          alt="Background"
+          {...canvasStyles.background.image}
+        />
+      )}
+      {children}
+    </Box>
+  );
+};
 
 export default Background;

@@ -1,17 +1,23 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { canvasStyles } from './canvas-styles';
+import { AppContext } from '@/context/app-context';
 
-interface SubtitleProps {
-  text: string;
-}
+const Subtitle: React.FC = () => {
+  const context = useContext(AppContext);
+  
+  if (!context) return null;
+  const { subtitleText } = context;
+  
+  if (!subtitleText) return null;
 
-const Subtitle: React.FC<SubtitleProps> = ({ text }) => (
-  <Box {...canvasStyles.subtitle.container}>
-    <Text {...canvasStyles.subtitle.text}>
-      {text}
-    </Text>
-  </Box>
-);
+  return (
+    <Box {...canvasStyles.subtitle.container}>
+      <Text {...canvasStyles.subtitle.text}>
+        {subtitleText}
+      </Text>
+    </Box>
+  );
+};
 
 export default Subtitle;

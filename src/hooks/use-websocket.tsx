@@ -1,51 +1,41 @@
-import {
-  useState, useEffect, useRef, useCallback,
-} from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-interface MessageEvent<> {
-    type: string;
-    text?: string;
-    audio?: string;
-    volumes?: number[];
-    slice_length?: number;
-    files?: string[];
-    expressions?: string[];
-    // [key: string]: any;
+interface MessageEvent {
+  type: string;
+  text?: string;
+  audio?: string;
+  volumes?: number[];
+  slice_length?: number;
+  files?: string[];
+  expressions?: string[];
 }
 
 interface UseWebSocketProps {
-    url: string;
-    onMessage: (message: MessageEvent) => void;
-    onOpen?: () => void;
-    onClose?: () => void;
-    protocols?: string | string[];
-}
-
-interface UseWebSocketReturn {
-    sendMessage: (message: object) => void;
-    wsState: WebSocketState;
-    reconnect: () => void;
+  url: string;
+  onMessage: (message: MessageEvent) => void;
+  onOpen?: () => void;
+  onClose?: () => void;
 }
 
 type WebSocketState = 'CONNECTING' | 'OPEN' | 'CLOSING' | 'CLOSED';
 
-export function useWebSocket(props: UseWebSocketProps): UseWebSocketReturn {
-  const {
-    url, onMessage, onOpen, onClose, protocols,
-  } = props;
+export function useWebSocket({
+  url,
+  onMessage,
+  onOpen,
+  onClose,
+}: UseWebSocketProps) {
   const [wsState, setWsState] = useState<WebSocketState>('CLOSED');
   const wsRef = useRef<WebSocket | null>(null);
 
   const connect = useCallback(() => {
-    const ws = new WebSocket(url, protocols);
+    const ws = new WebSocket(url);
     wsRef.current = ws;
     setWsState('CONNECTING');
 
     ws.onopen = () => {
       setWsState('OPEN');
-      if (onOpen) {
-        onOpen();
-      }
+      onOpen?.();
     };
 
     ws.onmessage = (event) => {
@@ -59,42 +49,32 @@ export function useWebSocket(props: UseWebSocketProps): UseWebSocketReturn {
 
     ws.onclose = () => {
       setWsState('CLOSED');
-      if (onClose) {
-        onClose();
-      }
+      onClose?.();
     };
 
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
+      setWsState('CLOSED');
     };
-  }, [url, onMessage, onOpen, onClose, protocols]);
+  }, [url, onMessage, onOpen, onClose]);
 
   useEffect(() => {
     connect();
-    return () => {
-      wsRef.current?.close();
-    };
-  }, [connect]);
+    return () => wsRef.current?.close();
+  }, []);
 
   const sendMessage = useCallback((message: object) => {
-    if (wsRef.current && wsState === 'OPEN') {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify(message));
     } else {
       console.warn('WebSocket is not open. Unable to send message:', message);
     }
-  }, [wsState]);
-
-  const reconnect = useCallback(() => {
-    if (wsRef.current) {
-      wsRef.current.close();
-    }
-    connect();
-  }, [connect]);
+  }, []);
 
   return {
     sendMessage,
     wsState,
-    reconnect,
+    reconnect: connect
   };
 }
 

@@ -5,6 +5,7 @@ export const canvasStyles = {
       width: '100%',
       height: '100%',
       overflow: 'hidden',
+      pointerEvents: 'auto'
     },
     image: {
       position: 'absolute',
@@ -22,6 +23,7 @@ export const canvasStyles = {
       width: '100%',
       height: '100%',
       zIndex: '1',
+      pointerEvents: 'auto'
     },
   },
   subtitle: {

@@ -1,11 +1,11 @@
 import { useContext } from 'react';
-import { StateContext } from '../context/state-context';
+import { AppContext } from '../context/app-context';
 import { useWebSocket, MessageEvent } from '../hooks/use-websocket';
 import { WebSocketContext } from '../context/websocket-context';
 
-function WebSocketHandler({ children }: { children: React.ReactNode }) {
-  const { setState } = useContext(StateContext)!;
-  // (window as any).setState = setState;
+function WebSocketConnection({ children }: { children: React.ReactNode }) {
+  const { setAiState } = useContext(AppContext)!;
+  (window as any).setAiState = setAiState;
 
   const handleWebSocketMessage = (message: MessageEvent) => {
     console.log('Received message from server:', message);
@@ -35,7 +35,7 @@ function WebSocketHandler({ children }: { children: React.ReactNode }) {
       case 'conversation-chain-start':
         break;
       case 'conversation-chain-end':
-        setState('idle');
+        setAiState('idle');
         break;
       default:
         console.warn('Unknown control command:', controlText);
@@ -66,4 +66,4 @@ function WebSocketHandler({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default WebSocketHandler;
+export default WebSocketConnection;

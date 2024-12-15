@@ -1,18 +1,16 @@
 import React from 'react';
-import {
-  Box, Flex, defaultSystem, ChakraProvider,
-} from '@chakra-ui/react';
+import { Box, Flex, ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import Canvas from './components/canvas/canvas';
 import Sidebar from './components/sidebar/sidebar';
 import Footer from './components/footer/footer';
-import { StateProvider } from './context/state-context';
+import { AppProvider } from './context/app-context';
 import { layoutStyles } from './layout';
-import WebSocketHandler from './components/websocket-handler';
+import WebsocketConnection from './components/websocket-connection';
 
 const App: React.FC = () => (
   <ChakraProvider value={defaultSystem}>
-    <StateProvider>
-      <WebSocketHandler>
+    <AppProvider>
+      <WebsocketConnection>
         <Flex {...layoutStyles.appContainer}>
           <Box {...layoutStyles.sidebar}>
             <Sidebar />
@@ -20,10 +18,7 @@ const App: React.FC = () => (
 
           <Box {...layoutStyles.mainContent}>
             <Box {...layoutStyles.canvas}>
-              <Canvas
-                backgroundUrl="/bg/ceiling-window-room-night.jpeg"
-                subtitleText="Hi, I'm some random AI VTuber. Who the hell are ya? Ahh, you must be amazed by my awesomeness, right? right?"
-              />
+              <Canvas />
             </Box>
 
             <Box {...layoutStyles.footer}>
@@ -31,8 +26,8 @@ const App: React.FC = () => (
             </Box>
           </Box>
         </Flex>
-      </WebSocketHandler>
-    </StateProvider>
+      </WebsocketConnection>
+    </AppProvider>
   </ChakraProvider>
 );
 

@@ -4,11 +4,7 @@ import { WebSocketContext } from '@/context/websocket-context';
 import { canvasStyles } from './canvas-styles';
 
 function WebSocketStatus() {
-  const wsContext = useContext(WebSocketContext);
-  
-  if (!wsContext) return null;
-  
-  const { wsState } = wsContext;
+  const { wsState } = useContext(WebSocketContext)!;
   
   const getStatusColor = () => {
     switch(wsState) {
