@@ -1,10 +1,10 @@
 import { useContext } from 'react';
-import { AppContext } from '../context/app-context';
+import { AiStateContext } from '../context/aistate-context';
 import { useWebSocket, MessageEvent } from '../hooks/use-websocket';
 import { WebSocketContext } from '../context/websocket-context';
 
 function WebSocketConnection({ children }: { children: React.ReactNode }) {
-  const { setAiState } = useContext(AppContext)!;
+  const { setAiState } = useContext(AiStateContext)!;
   (window as any).setAiState = setAiState;
 
   const handleWebSocketMessage = (message: MessageEvent) => {

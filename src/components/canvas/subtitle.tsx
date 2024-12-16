@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Box, Text } from '@chakra-ui/react';
 import { canvasStyles } from './canvas-styles';
-import { AppContext } from '@/context/app-context';
+import { SubtitleContext } from '@/context/subtitle-context';
 
 const Subtitle: React.FC = () => {
-  const context = useContext(AppContext);
+  const context = useContext(SubtitleContext);
   
   if (!context) return null;
   const { subtitleText } = context;

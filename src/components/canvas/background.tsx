@@ -1,10 +1,10 @@
 import React, { useContext } from 'react';
 import { Box, Image } from '@chakra-ui/react';
 import { canvasStyles } from './canvas-styles';
-import { AppContext } from '@/context/app-context';
+import { BgUrlContext } from '@/context/bgurl-context';
 
 const Background: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
-  const context = useContext(AppContext);
+  const context = useContext(BgUrlContext);
   
   if (!context) return null;
   const { backgroundUrl } = context;

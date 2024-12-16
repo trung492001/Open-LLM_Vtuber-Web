@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import * as PIXI from 'pixi.js';
 import { Live2DModel } from 'pixi-live2d-display';
-import { AppContext } from '@/context/app-context';
+import { L2DContext } from '@/context/l2d-context';
 
 const pointerInteractionEnabled = false;
 
@@ -49,14 +49,8 @@ function makeDraggable(model: Live2DModel) {
   });
 }
 
-function changeBackgroundImage(imageUrl: string) {
-  document.body.style.backgroundImage = `url('${imageUrl}')`;
-  document.body.style.backgroundSize = 'cover';
-  document.body.style.backgroundPosition = 'center';
-}
-
 export const Live2D: React.FC = () => {
-  const { modelInfo, backgroundUrl } = useContext(AppContext)!;
+  const { modelInfo } = useContext(L2DContext)!;
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const appRef = useRef<PIXI.Application | null>(null);
   const modelRef = useRef<Live2DModel | null>(null);
@@ -161,12 +155,6 @@ export const Live2D: React.FC = () => {
     resizeApp();
     loadModel();
   }, [modelInfo]);
-
-  useEffect(() => {
-    if (backgroundUrl) {
-      changeBackgroundImage(backgroundUrl);
-    }
-  }, [backgroundUrl]);
 
   return (
     <canvas 

@@ -14,25 +14,14 @@ interface ModelInfo {
   };
 }
 
-interface AppContextState {
-  aiState: string;
-  backgroundUrl?: string;
-  subtitleText?: string;
+interface L2DContextState {
   modelInfo: ModelInfo;
-  setAiState: (state: string) => void;
-  setSubtitleText: (text: string) => void;
-  setBackgroundUrl: (url: string) => void;
   setModelInfo: (info: ModelInfo) => void;
 }
 
-export const AppContext = createContext<AppContextState | null>(null);
+export const L2DContext = createContext<L2DContextState | null>(null);
 
-export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [aiState, setAiState] = useState('idle');
-  const [backgroundUrl, setBackgroundUrl] = useState<string>('/bg/ceiling-window-room-night.jpeg');
-  const [subtitleText, setSubtitleText] = useState<string>(
-    "Hi, I'm some random AI VTuber. Who the hell are ya? Ahh, you must be amazed by my awesomeness, right? right?"
-  );
+export const L2DProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [modelInfo, setModelInfo] = useState<ModelInfo>({
     name: "Elaina",
     description: "Elaina",
@@ -83,26 +72,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   //   }
   // });
 
-
   const value = useMemo(() => ({
-    aiState,
-    backgroundUrl,
-    subtitleText,
     modelInfo,
-    setAiState,
-    setSubtitleText,
-    setBackgroundUrl,
     setModelInfo,
-  }), [
-    aiState, 
-    backgroundUrl, 
-    subtitleText,
-    modelInfo,
-  ]);
+  }), [modelInfo]);
 
   return (
-    <AppContext.Provider value={value}>
+    <L2DContext.Provider value={value}>
       {children}
-    </AppContext.Provider>
+    </L2DContext.Provider>
   );
 };
