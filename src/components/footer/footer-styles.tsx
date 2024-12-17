@@ -1,9 +1,42 @@
-export const footerStyles = {
+import { SystemStyleObject } from '@chakra-ui/react';
+
+interface FooterStyles {
+  container: (isCollapsed: boolean) => SystemStyleObject;
+  toggleButton: SystemStyleObject;
+  actionButton: SystemStyleObject;
+  input: SystemStyleObject;
+  attachButton: SystemStyleObject;
+}
+
+interface AIIndicatorStyles {
+  container: SystemStyleObject;
+  text: SystemStyleObject;
+}
+
+export const footerStyles: { 
+  footer: FooterStyles; 
+  aiIndicator: AIIndicatorStyles;
+} = {
   footer: {
-    container: {
+    container: (isCollapsed) => ({
+      bg: isCollapsed ? 'transparent' : 'gray.800',
+      borderTopRadius: isCollapsed ? 'none' : 'lg',
+      transform: isCollapsed ? 'translateY(calc(100% - 24px))' : 'translateY(0)',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      height: '100%',
       position: 'relative',
-      width: '100%',
-      p: '4',
+      overflow: isCollapsed ? 'visible' : 'hidden',
+    }),
+    toggleButton: {
+      height: '24px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      color: 'whiteAlpha.700',
+      _hover: { color: 'white' },
+      bg: 'transparent',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
     },
     actionButton: {
       borderRadius: '12px',
