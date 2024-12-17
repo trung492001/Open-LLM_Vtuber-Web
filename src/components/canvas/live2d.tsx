@@ -2,10 +2,11 @@ import React, { useEffect, useRef, useContext } from 'react';
 import * as PIXI from 'pixi.js';
 import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch';
 import { L2DContext } from '@/context/l2d-context';
-import { AiStateContext } from '@/context/aistate-context';
+import { AiStateContext } from '@/context/ai-state-context';
 import { SubtitleContext } from '@/context/subtitle-context';
 import { ResponseContext } from '@/context/response-context';
 import { audioTaskQueue } from '@/utils/task-queue';
+import { WebSocketContext } from '@/context/websocket-context';
 
 const pointerInteractionEnabled = false;
 
@@ -183,6 +184,28 @@ interface AudioTaskOptions {
   slice_length: number;
   text?: string | null;
   expression_list?: string[] | null;
+}
+
+export function useInterrupt() {
+  const { setAiState } = useContext(AiStateContext)!;
+  const { sendMessage } = useContext(WebSocketContext)!;
+  const { fullResponse } = useContext(ResponseContext)!;
+  
+  const interrupt = () => {
+    console.log("Interrupting conversation chain");
+    sendMessage({ 
+      type: "interrupt-signal", 
+      text: fullResponse 
+    });
+    setAiState('interrupted');
+    if(l2dModel) {
+      l2dModel.stopSpeaking();
+    }
+    audioTaskQueue.clearQueue();
+    console.log("Interrupted!");
+  };
+
+  return { interrupt };
 }
 
 export function useAudioTask() {

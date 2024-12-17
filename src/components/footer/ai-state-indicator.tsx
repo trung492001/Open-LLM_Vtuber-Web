@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Box, Text } from '@chakra-ui/react';
-import { AiStateContext } from '@/context/aistate-context';
+import { AiStateContext } from '@/context/ai-state-context';
 import { footerStyles } from './footer-styles';
 
 function AIStateIndicator() {

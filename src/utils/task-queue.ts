@@ -14,6 +14,7 @@ export class TaskQueue {
 
   clearQueue() {
     this.queue = [];
+    this.running = false;
   }
 
   private async runNextTask() {

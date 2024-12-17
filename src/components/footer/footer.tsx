@@ -7,6 +7,7 @@ import { InputGroup } from '@/components/ui/input-group';
 import { footerStyles } from './footer-styles';
 import AIStateIndicator from './ai-state-indicator';
 import { useTextInput } from '@/hooks/use-text-input';
+import { useInterrupt } from '@/components/canvas/live2d';
 
 function Footer() {
   const styles = footerStyles.footer;
@@ -15,6 +16,7 @@ function Footer() {
     handleInputChange,
     handleKeyPress,
   } = useTextInput();
+  const { interrupt } = useInterrupt();
 
   return (
     <Box {...styles.container}>
@@ -34,6 +36,7 @@ function Footer() {
             <IconButton
               aria-label="Raise hand"
               bg="yellow.500"
+              onClick={interrupt}
               {...styles.actionButton}
             >
               <IoHandRightSharp size="24" />

@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { AiStateContext } from '@/context/aistate-context';
+import { AiStateContext } from '@/context/ai-state-context';
 import { useWebSocket, MessageEvent } from '@/hooks/use-websocket';
 import { WebSocketContext } from '@/context/websocket-context';
 import { L2DContext } from '@/context/l2d-context';

@@ -3,7 +3,7 @@ import { Box, Flex, ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import Canvas from './components/canvas/canvas';
 import Sidebar from './components/sidebar/sidebar';
 import Footer from './components/footer/footer';
-import { AiStateProvider } from './context/aistate-context';
+import { AiStateProvider } from './context/ai-state-context';
 import { L2DProvider } from './context/l2d-context';
 import { SubtitleProvider } from './context/subtitle-context';
 import { BgUrlProvider } from './context/bgurl-context';
