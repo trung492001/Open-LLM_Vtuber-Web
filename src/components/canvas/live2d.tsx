@@ -1,7 +1,11 @@
 import React, { useEffect, useRef, useContext } from 'react';
 import * as PIXI from 'pixi.js';
-import { Live2DModel } from 'pixi-live2d-display';
+import { Live2DModel } from 'pixi-live2d-display-lipsyncpatch';
 import { L2DContext } from '@/context/l2d-context';
+import { AiStateContext } from '@/context/aistate-context';
+import { SubtitleContext } from '@/context/subtitle-context';
+import { ResponseContext } from '@/context/response-context';
+import { audioTaskQueue } from '@/utils/task-queue';
 
 const pointerInteractionEnabled = false;
 
@@ -20,7 +24,7 @@ const pointerInteractionEnabled = false;
 
 function makeDraggable(model: Live2DModel) {
   model.interactive = true;
-  model.buttonMode = true;
+  // model.buttonMode = true;
   model.cursor = 'pointer';
 
   let isDragging = false;
@@ -48,6 +52,8 @@ function makeDraggable(model: Live2DModel) {
     isDragging = false;
   });
 }
+
+let l2dModel: Live2DModel | null = null;
 
 export const Live2D: React.FC = () => {
   const { modelInfo } = useContext(L2DContext)!;
@@ -129,11 +135,10 @@ export const Live2D: React.FC = () => {
           Live2DModel.from(modelInfo.url, options),
         ]);
 
-        const l2dModel = models[0];
+        l2dModel = models[0];
         modelRef.current = l2dModel;
         app.stage.addChild(l2dModel);
-
-        // Calculate scale based on parent container size
+        
         const scaleX = app.screen.width * modelInfo.kScale;
         const scaleY = app.screen.height * modelInfo.kScale;
         l2dModel.scale.set(Math.min(scaleX, scaleY));
@@ -141,7 +146,7 @@ export const Live2D: React.FC = () => {
         makeDraggable(l2dModel);
 
         l2dModel.on('added', () => {
-          l2dModel.update(PIXI.Ticker.shared.deltaTime);
+          l2dModel?.update(PIXI.Ticker.shared.deltaTime);
         });
 
         const initXshift = modelInfo.initialXshift || 0;
@@ -157,6 +162,12 @@ export const Live2D: React.FC = () => {
     loadModel();
   }, [modelInfo]);
 
+  useEffect(() => {
+    if (l2dModel) {
+      console.log('L2dModel context updated:', l2dModel);
+    }
+  }, [l2dModel]);
+
   return (
     <canvas 
       id="canvas" 
@@ -164,3 +175,79 @@ export const Live2D: React.FC = () => {
     />
   );
 };
+
+
+interface AudioTaskOptions {
+  audio_base64: string;
+  volumes: number[];
+  slice_length: number;
+  text?: string | null;
+  expression_list?: string[] | null;
+}
+
+export function useAudioTask() {
+  const { aiState } = useContext(AiStateContext)!;
+  const { setSubtitleText } = useContext(SubtitleContext)!;
+  const { appendResponse } = useContext(ResponseContext)!;
+
+  const handleAudioPlayback = (options: AudioTaskOptions, onComplete: () => void) => {
+    if (aiState === 'interrupted') {
+      console.error('Audio playback blocked. State:', aiState);
+      onComplete();
+      return;
+    }
+
+    const { audio_base64, text, expression_list } = options;
+
+    if (text) {
+      appendResponse(text);
+      setSubtitleText(text);
+    }
+
+    if (l2dModel == null) {
+      console.error('Model not initialized');
+      onComplete();
+      return;
+    }
+
+    try {
+      l2dModel.speak('data:audio/wav;base64,' + audio_base64, {
+        expression: expression_list?.[0] || undefined,
+        resetExpression: true,
+        onFinish: () => {
+          console.log('Voiceline is over');
+          onComplete();
+        },
+        onError: (error: any) => {
+          console.error('Audio playback error:', error);
+          onComplete();
+        }
+      });
+    } catch (error) {
+      console.error('Speak function error:', error);
+      onComplete();
+    }
+  };
+
+  const addAudioTask = async (options: AudioTaskOptions) => {
+    if (aiState === 'interrupted') {
+      console.log('Skipping audio task due to interrupted state');
+      return;
+    }
+
+    console.log(`Adding audio task ${options.text} to queue`);
+    
+    audioTaskQueue.addTask(() => 
+      new Promise<void>((resolve) => {
+        handleAudioPlayback(options, resolve);
+      }).catch(error => {
+        console.log('Audio task error:', error);
+      })
+    );
+  };
+
+  return {
+    addAudioTask,
+    appendResponse
+  };
+} 

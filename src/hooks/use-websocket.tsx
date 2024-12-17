@@ -7,8 +7,8 @@ interface MessageEvent {
   slice_length?: number;
   files?: string[];
   expressions?: string[];
-  text: string;
-  model_info: ModelInfo;
+  text?: string;
+  model_info?: ModelInfo;
 }
 
 interface UseWebSocketProps {

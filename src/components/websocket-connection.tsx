@@ -1,16 +1,21 @@
 import { useContext } from 'react';
-import { AiStateContext } from '../context/aistate-context';
-import { useWebSocket, MessageEvent } from '../hooks/use-websocket';
-import { WebSocketContext } from '../context/websocket-context';
-import { L2DContext } from '../context/l2d-context';
+import { AiStateContext } from '@/context/aistate-context';
+import { useWebSocket, MessageEvent } from '@/hooks/use-websocket';
+import { WebSocketContext } from '@/context/websocket-context';
+import { L2DContext } from '@/context/l2d-context';
 import { SubtitleContext } from '@/context/subtitle-context';
+import { audioTaskQueue } from '@/utils/task-queue';
+import { ResponseContext } from '@/context/response-context';
+import { useAudioTask } from '@/components/canvas/live2d';
 
 let wsUrl = "ws://127.0.0.1:12393/client-ws";
 
 function WebSocketConnection({ children }: { children: React.ReactNode }) {
-  const { setAiState } = useContext(AiStateContext)!;
+  const { aiState, setAiState } = useContext(AiStateContext)!;
   const { setModelInfo } = useContext(L2DContext)!;
   const { setSubtitleText } = useContext(SubtitleContext)!;
+  const { clearResponse } = useContext(ResponseContext)!;
+  const { addAudioTask } = useAudioTask();
 
   const handleWebSocketMessage = (message: MessageEvent) => {
     console.log('Received message from server:', message);
@@ -22,18 +27,35 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
         break;
       case "set-model":
         console.log("set-model: ", message.model_info);
-        const modelUrl = wsUrl.replace("ws:", window.location.protocol).replace("/client-ws", "") + message.model_info.url;
-        message.model_info.url = modelUrl;
+        if (message.model_info) {
+          const modelUrl = wsUrl.replace("ws:", window.location.protocol).replace("/client-ws", "") + message.model_info.url;
+          message.model_info.url = modelUrl;
+        }
         setAiState('loading');
         setModelInfo(message.model_info);
         setAiState('idle');
         break;
-      case 'subtitle':
-        setSubtitleText(message.text);
+      case 'full-text':
+        if (message.text) {
+          setSubtitleText(message.text);
+        }
         break;
       case 'config-files':
         break;
       case 'background-files':
+        break;
+      case 'audio':
+        if (aiState === 'interrupted') {
+          console.log('Audio playback intercepted. Sentence:', message.text);
+        } else {
+          addAudioTask({
+            audio_base64: message.audio || '',
+            volumes: message.volumes || [],
+            slice_length: message.slice_length || 0,
+            text: message.text || null,
+            expression_list: message.expressions || null
+          });
+        }
         break;
       default:
         console.warn('Unknown message type:', message.type);
@@ -49,6 +71,9 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
       case 'stop-mic':
         break;
       case 'conversation-chain-start':
+        setAiState('thinking-speaking');
+        audioTaskQueue.clearQueue();
+        clearResponse();
         break;
       case 'conversation-chain-end':
         setAiState('idle');

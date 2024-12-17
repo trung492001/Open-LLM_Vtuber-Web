@@ -9,31 +9,34 @@ import { SubtitleProvider } from './context/subtitle-context';
 import { BgUrlProvider } from './context/bgurl-context';
 import { layoutStyles } from './layout';
 import WebsocketConnection from './components/websocket-connection';
+import { ResponseProvider } from './context/response-context';
 
 const App: React.FC = () => (
   <ChakraProvider value={defaultSystem}>
     <AiStateProvider>
       <L2DProvider>
         <SubtitleProvider>
-          <BgUrlProvider>
-            <WebsocketConnection>
-              <Flex {...layoutStyles.appContainer}>
-                <Box {...layoutStyles.sidebar}>
-                  <Sidebar />
-                </Box>
-
-                <Box {...layoutStyles.mainContent}>
-                  <Box {...layoutStyles.canvas}>
-                    <Canvas />
+          <ResponseProvider>
+            <BgUrlProvider>
+              <WebsocketConnection>
+                <Flex {...layoutStyles.appContainer}>
+                  <Box {...layoutStyles.sidebar}>
+                    <Sidebar />
                   </Box>
 
-                  <Box {...layoutStyles.footer}>
-                    <Footer />
+                  <Box {...layoutStyles.mainContent}>
+                    <Box {...layoutStyles.canvas}>
+                      <Canvas />
+                    </Box>
+
+                    <Box {...layoutStyles.footer}>
+                      <Footer />
+                    </Box>
                   </Box>
-                </Box>
-              </Flex>
-            </WebsocketConnection>
-          </BgUrlProvider>
+                </Flex>
+              </WebsocketConnection>
+            </BgUrlProvider>
+          </ResponseProvider>
         </SubtitleProvider>
       </L2DProvider>
     </AiStateProvider>

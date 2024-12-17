@@ -1,4 +1,4 @@
-import React, { createContext, useState, useMemo } from 'react';
+import { createContext, useState } from 'react';
 
 export interface ModelInfo {
   name?: string;
@@ -13,24 +13,18 @@ export interface ModelInfo {
     [key: string]: number;
   };
 }
-
-interface L2DContextState {
-  modelInfo: ModelInfo | null;
-  setModelInfo: (info: ModelInfo | null) => void;
+interface L2DContextType {
+  modelInfo?: ModelInfo;
+  setModelInfo: (info: L2DContextType['modelInfo']) => void;
 }
 
-export const L2DContext = createContext<L2DContextState | null>(null);
+export const L2DContext = createContext<L2DContextType | null>(null);
 
 export const L2DProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [modelInfo, setModelInfo] = useState<ModelInfo | null>(null);
-  
-  const value = useMemo(() => ({
-    modelInfo,
-    setModelInfo,
-  }), [modelInfo]);
+  const [modelInfo, setModelInfo] = useState<L2DContextType['modelInfo']>();
 
   return (
-    <L2DContext.Provider value={value}>
+    <L2DContext.Provider value={{ modelInfo, setModelInfo}}>
       {children}
     </L2DContext.Provider>
   );

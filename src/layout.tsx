@@ -1,52 +1,39 @@
 export const layoutStyles = {
   appContainer: {
-    display: 'flex',
     width: '100vw',
     height: '100vh',
-    bg: 'black',
+    bg: 'gray.900',
     color: 'white',
     overflow: 'hidden',
+    position: 'relative',
+    display: 'flex',
   },
-
   sidebar: {
-    width: '26%',
+    width: '400px',
     height: '100%',
+    bg: 'gray.800',
     borderRight: '1px solid',
-    borderColor: 'whiteAlpha.300',
-    px: 0,
-    py: 2,
+    borderColor: 'whiteAlpha.200',
+    overflow: 'hidden',
+    flexShrink: 0,
   },
-
   mainContent: {
     flex: 1,
+    height: '100%',
+    position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    position: 'relative',
-    overflow: 'hidden',
   },
-
   canvas: {
     flex: 1,
     position: 'relative',
-    pointerEvents: 'auto',
+    overflow: 'hidden',
   },
-
-  subtitle: {
-    position: 'absolute',
-    bottom: '120px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    bg: 'blackAlpha.700',
-    p: 4,
-    borderRadius: 'md',
-    maxWidth: '80%',
-  },
-
   footer: {
-    height: '100px',
-    p: 0,
-    display: 'flex',
-    alignItems: 'center',
-    gap: 4,
+    width: '100%',
+    bg: 'gray.800',
+    borderTop: '1px solid',
+    borderColor: 'whiteAlpha.200',
+    position: 'relative', 
   },
 };
