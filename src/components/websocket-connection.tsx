@@ -3,12 +3,14 @@ import { AiStateContext } from '../context/aistate-context';
 import { useWebSocket, MessageEvent } from '../hooks/use-websocket';
 import { WebSocketContext } from '../context/websocket-context';
 import { L2DContext } from '../context/l2d-context';
+import { SubtitleContext } from '@/context/subtitle-context';
 
 let wsUrl = "ws://127.0.0.1:12393/client-ws";
 
 function WebSocketConnection({ children }: { children: React.ReactNode }) {
   const { setAiState } = useContext(AiStateContext)!;
   const { setModelInfo } = useContext(L2DContext)!;
+  const { setSubtitleText } = useContext(SubtitleContext)!;
 
   const handleWebSocketMessage = (message: MessageEvent) => {
     console.log('Received message from server:', message);
@@ -24,10 +26,11 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
         message.model_info.url = modelUrl;
         setAiState('loading');
         setModelInfo(message.model_info);
+        setAiState('idle');
         break;
-      case 'full-text':
+      case 'subtitle':
+        setSubtitleText(message.text);
         break;
-      
       case 'config-files':
         break;
       case 'background-files':
