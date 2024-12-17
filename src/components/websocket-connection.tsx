@@ -2,21 +2,32 @@ import { useContext } from 'react';
 import { AiStateContext } from '../context/aistate-context';
 import { useWebSocket, MessageEvent } from '../hooks/use-websocket';
 import { WebSocketContext } from '../context/websocket-context';
+import { L2DContext } from '../context/l2d-context';
+
+let wsUrl = "ws://127.0.0.1:12393/client-ws";
 
 function WebSocketConnection({ children }: { children: React.ReactNode }) {
   const { setAiState } = useContext(AiStateContext)!;
-  (window as any).setAiState = setAiState;
+  const { setModelInfo } = useContext(L2DContext)!;
 
   const handleWebSocketMessage = (message: MessageEvent) => {
     console.log('Received message from server:', message);
     switch (message.type) {
-      case 'full-text':
-        break;
       case 'control':
         if (message.text) {
           handleControlMessage(message.text);
         }
         break;
+      case "set-model":
+        console.log("set-model: ", message.model_info);
+        const modelUrl = wsUrl.replace("ws:", window.location.protocol).replace("/client-ws", "") + message.model_info.url;
+        message.model_info.url = modelUrl;
+        setAiState('loading');
+        setModelInfo(message.model_info);
+        break;
+      case 'full-text':
+        break;
+      
       case 'config-files':
         break;
       case 'background-files':
@@ -27,6 +38,8 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
   };
 
   const handleControlMessage = (controlText: string) => {
+    if (typeof controlText !== 'string') return;
+    
     switch (controlText) {
       case 'start-mic':
         break;
@@ -43,7 +56,7 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
   };
 
   const { sendMessage, wsState, reconnect } = useWebSocket({
-    url: 'ws://127.0.0.1:12393/client-ws',
+    url: wsUrl,
     onMessage: handleWebSocketMessage,
     onOpen: () => {
       console.log('WebSocket connection opened');

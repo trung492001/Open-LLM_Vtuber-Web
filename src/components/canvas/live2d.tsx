@@ -89,8 +89,8 @@ export const Live2D: React.FC = () => {
       if (appRef.current && modelRef.current) {
         const app = appRef.current;
         const l2dModel = modelRef.current;
-        const initXshift = modelInfo.initialXshift || 0;
-        const initYshift = modelInfo.initialYshift || 0;
+        const initXshift = modelInfo?.initialXshift || 0;
+        const initYshift = modelInfo?.initialYshift || 0;
         l2dModel.x = app.screen.width / 2 - l2dModel.width / 2 + initXshift;
         l2dModel.y = app.screen.height / 2 - l2dModel.height / 2 + initYshift;
       }
@@ -107,13 +107,14 @@ export const Live2D: React.FC = () => {
   // Load model
   useEffect(() => {
     const loadModel = async () => {
+      if (!modelInfo) return;
       if (!appRef.current || !modelInfo.url) return;
 
       const app = appRef.current;
 
       // Clear old model
       if (modelRef.current) {
-        app.stage.removeChild(modelRef.current as unknown as PIXI.DisplayObject);
+        app.stage.removeChild(modelRef.current);
         modelRef.current.destroy({ children: true, texture: true, baseTexture: true });
         modelRef.current = null;
       }
@@ -130,7 +131,7 @@ export const Live2D: React.FC = () => {
 
         const l2dModel = models[0];
         modelRef.current = l2dModel;
-        app.stage.addChild(l2dModel as unknown as PIXI.DisplayObject);
+        app.stage.addChild(l2dModel);
 
         // Calculate scale based on parent container size
         const scaleX = app.screen.width * modelInfo.kScale;

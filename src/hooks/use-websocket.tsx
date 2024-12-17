@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-
+import { ModelInfo } from '../context/l2d-context';
 interface MessageEvent {
   type: string;
-  text?: string;
   audio?: string;
   volumes?: number[];
   slice_length?: number;
   files?: string[];
   expressions?: string[];
+  text: string;
+  model_info: ModelInfo;
 }
 
 interface UseWebSocketProps {
