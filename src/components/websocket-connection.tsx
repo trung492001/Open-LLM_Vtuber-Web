@@ -8,7 +8,7 @@ import { audioTaskQueue } from '@/utils/task-queue';
 import { ResponseContext } from '@/context/response-context';
 import { useAudioTask } from '@/components/canvas/live2d';
 
-let wsUrl = "ws://127.0.0.1:12393/client-ws";
+const wsUrl = "ws://127.0.0.1:12393/client-ws";
 
 function WebSocketConnection({ children }: { children: React.ReactNode }) {
   const { aiState, setAiState } = useContext(AiStateContext)!;

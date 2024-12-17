@@ -54,7 +54,7 @@ function makeDraggable(model: Live2DModel) {
   });
 }
 
-let l2dModel: Live2DModel | null = null;
+let model2: Live2DModel | null = null;
 
 export const Live2D: React.FC = () => {
   const { modelInfo } = useContext(L2DContext)!;
@@ -95,11 +95,11 @@ export const Live2D: React.FC = () => {
       resizeApp();
       if (appRef.current && modelRef.current) {
         const app = appRef.current;
-        const l2dModel = modelRef.current;
+        const model2 = modelRef.current;
         const initXshift = modelInfo?.initialXshift || 0;
         const initYshift = modelInfo?.initialYshift || 0;
-        l2dModel.x = app.screen.width / 2 - l2dModel.width / 2 + initXshift;
-        l2dModel.y = app.screen.height / 2 - l2dModel.height / 2 + initYshift;
+        model2.x = app.screen.width / 2 - model2.width / 2 + initXshift;
+        model2.y = app.screen.height / 2 - model2.height / 2 + initYshift;
       }
     };
 
@@ -136,38 +136,41 @@ export const Live2D: React.FC = () => {
           Live2DModel.from(modelInfo.url, options),
         ]);
 
-        l2dModel = models[0];
-        modelRef.current = l2dModel;
-        app.stage.addChild(l2dModel);
+        model2 = models[0];
+        modelRef.current = model2;
+        app.stage.addChild(model2);
         
         const scaleX = app.screen.width * modelInfo.kScale;
         const scaleY = app.screen.height * modelInfo.kScale;
-        l2dModel.scale.set(Math.min(scaleX, scaleY));
+        model2.scale.set(Math.min(scaleX, scaleY));
 
-        makeDraggable(l2dModel);
+        makeDraggable(model2);
 
-        l2dModel.on('added', () => {
-          l2dModel?.update(PIXI.Ticker.shared.deltaTime);
+        model2.on('added', () => {
+          model2?.update(PIXI.Ticker.shared.deltaTime);
         });
 
         const initXshift = modelInfo.initialXshift || 0;
         const initYshift = modelInfo.initialYshift || 0;
-        l2dModel.x = app.screen.width / 2 - l2dModel.width / 2 + initXshift;
-        l2dModel.y = app.screen.height / 2 - l2dModel.height / 2 + initYshift;
+        model2.x = app.screen.width / 2 - model2.width / 2 + initXshift;
+        model2.y = app.screen.height / 2 - model2.height / 2 + initYshift;
+        
       } catch (error) {
         console.error("Failed to load Live2D model:", error);
       }
+      
     };
+
 
     resizeApp();
     loadModel();
   }, [modelInfo]);
 
   useEffect(() => {
-    if (l2dModel) {
-      console.log('L2dModel context updated:', l2dModel);
+    if (model2) {
+      console.log('L2dModel context updated:', model2);
     }
-  }, [l2dModel]);
+  }, [model2]);
 
   return (
     <canvas 
@@ -198,8 +201,8 @@ export function useInterrupt() {
       text: fullResponse 
     });
     setAiState('interrupted');
-    if(l2dModel) {
-      l2dModel.stopSpeaking();
+    if(model2) {
+      model2.stopSpeaking();
     }
     audioTaskQueue.clearQueue();
     console.log("Interrupted!");
@@ -212,7 +215,6 @@ export function useAudioTask() {
   const { aiState } = useContext(AiStateContext)!;
   const { setSubtitleText } = useContext(SubtitleContext)!;
   const { appendResponse } = useContext(ResponseContext)!;
-
   const handleAudioPlayback = (options: AudioTaskOptions, onComplete: () => void) => {
     if (aiState === 'interrupted') {
       console.error('Audio playback blocked. State:', aiState);
@@ -227,21 +229,21 @@ export function useAudioTask() {
       setSubtitleText(text);
     }
 
-    if (l2dModel == null) {
+    if (model2 == null) {
       console.error('Model not initialized');
       onComplete();
       return;
     }
 
     try {
-      l2dModel.speak('data:audio/wav;base64,' + audio_base64, {
+      model2.speak('data:audio/wav;base64,' + audio_base64, {
         expression: expression_list?.[0] || undefined,
         resetExpression: true,
         onFinish: () => {
           console.log('Voiceline is over');
           onComplete();
         },
-        onError: (error: any) => {
+        onError: (error) => {
           console.error('Audio playback error:', error);
           onComplete();
         }

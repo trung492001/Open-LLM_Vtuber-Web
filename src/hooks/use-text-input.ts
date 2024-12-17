@@ -6,7 +6,7 @@ import { audioTaskQueue } from '@/utils/task-queue';
 export function useTextInput() {
   const [inputValue, setInputValue] = useState('');
   const wsContext = useContext(WebSocketContext);
-  const { aiState, setAiState } = useContext(AiStateContext)!;
+  const { aiState } = useContext(AiStateContext)!;
   const { interrupt } = useInterrupt();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
