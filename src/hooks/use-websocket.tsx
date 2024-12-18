@@ -1,11 +1,17 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ModelInfo } from '../context/l2d-context';
+
+interface BackgroundFile {
+  name: string;
+  url: string;
+}
+
 interface MessageEvent {
   type: string;
   audio?: string;
   volumes?: number[];
   slice_length?: number;
-  files?: string[];
+  files?: BackgroundFile[];
   expressions?: string[];
   text?: string;
   model_info?: ModelInfo;

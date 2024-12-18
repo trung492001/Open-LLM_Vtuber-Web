@@ -18,7 +18,66 @@ export const sidebarStyles = {
   },
 
   settingUI: {
-
+    container: {
+      width: '100%',
+      height: '100%',
+      p: 4,
+      gap: 4,
+      position: 'relative',
+      overflowY: 'auto',
+      css: {
+        '&::-webkit-scrollbar': {
+          width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+          bg: 'whiteAlpha.100',
+          borderRadius: 'full',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          bg: 'whiteAlpha.300',
+          borderRadius: 'full',
+        },
+      },
+    },
+    header: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      gap: 1,
+    },
+    title: {
+      ml: 4,
+      fontSize: 'lg',
+      fontWeight: 'bold',
+    },
+    tabs: {
+      root: {
+        width: '100%',
+        variant: 'line' as const,
+        colorPalette: 'gray',
+      },
+      content: {
+      },
+      trigger: {
+        color: 'whiteAlpha.600',
+        _selected: {
+          color: 'white',
+        },
+        _hover: {
+          color: 'white',
+        }
+      }
+    },
+    footer: {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'flex-end',
+      gap: 2,
+      mt: 'auto',
+      pt: 4,
+      borderTop: '1px solid',
+      borderColor: 'whiteAlpha.200',
+    }
   },
 
   configCard: {

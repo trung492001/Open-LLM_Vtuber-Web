@@ -119,10 +119,15 @@ export const Live2D: React.FC = () => {
 
       const app = appRef.current;
 
-      // Clear old model
       if (modelRef.current) {
         app.stage.removeChild(modelRef.current);
-        modelRef.current.destroy({ children: true, texture: true, baseTexture: true });
+        modelRef.current.destroy({
+          children: true,
+          texture: true,
+          baseTexture: true
+        });
+        app.stage.removeChildren();
+        PIXI.utils.clearTextureCache();
         modelRef.current = null;
       }
 
@@ -171,6 +176,27 @@ export const Live2D: React.FC = () => {
       console.log('L2dModel context updated:', model2);
     }
   }, [model2]);
+
+  useEffect(() => {
+    return () => {
+      if (appRef.current) {
+        appRef.current.stage.removeChildren();
+        PIXI.utils.clearTextureCache();
+        if (modelRef.current) {
+          modelRef.current.destroy({
+            children: true,
+            texture: true,
+            baseTexture: true
+          });
+        }
+        appRef.current.destroy(true, {
+          children: true,
+          texture: true,
+          baseTexture: true
+        });
+      }
+    };
+  }, []);
 
   return (
     <canvas 

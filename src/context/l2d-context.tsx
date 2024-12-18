@@ -2,16 +2,16 @@ import { createContext, useState, PropsWithChildren } from 'react';
 
 // import { Live2DModel } from "pixi-live2d-display-lipsyncpatch";
 export interface ModelInfo {
-  name?: string;
-  description?: string;
-  url: string;
-  kScale: number;
-  initialXshift: number;
-  initialYshift: number;
-  kXOffset?: number;
-  idleMotionGroupName?: string;
-  emotionMap?: {
-    [key: string]: number;
+  name?: string;                  // Model name
+  description?: string;           // Model description
+  url: string;                    // Model URL
+  kScale: number;                 // Scale factor
+  initialXshift: number;          // Initial X position shift
+  initialYshift: number;          // Initial Y position shift
+  kXOffset?: number;             // X-axis offset coefficient
+  idleMotionGroupName?: string;   // Idle motion group name
+  emotionMap?: {                  // Emotion mapping
+    [key: string]: number;        // Maps emotion names to motion indices
   };
 }
 interface L2DContextType {

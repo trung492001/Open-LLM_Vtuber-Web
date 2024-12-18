@@ -7,6 +7,7 @@ import { SubtitleContext } from '@/context/subtitle-context';
 import { audioTaskQueue } from '@/utils/task-queue';
 import { ResponseContext } from '@/context/response-context';
 import { useAudioTask } from '@/components/canvas/live2d';
+import { BgUrlContext } from '@/context/bgurl-context';
 
 const wsUrl = "ws://127.0.0.1:12393/client-ws";
 
@@ -16,6 +17,7 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
   const { setSubtitleText } = useContext(SubtitleContext)!;
   const { clearResponse } = useContext(ResponseContext)!;
   const { addAudioTask } = useAudioTask();
+  const bgUrlContext = useContext(BgUrlContext);
 
   const handleWebSocketMessage = (message: MessageEvent) => {
     console.log('Received message from server:', message);
@@ -43,6 +45,9 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
       case 'config-files':
         break;
       case 'background-files':
+        if (message.files) {
+          bgUrlContext?.setBackgroundFiles(message.files);
+        }
         break;
       case 'audio':
         if (aiState === 'interrupted') {
@@ -88,6 +93,9 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
     onMessage: handleWebSocketMessage,
     onOpen: () => {
       console.log('WebSocket connection opened');
+      sendMessage({
+        type: "fetch-backgrounds"
+      });
     },
     onClose: () => {
       console.log('WebSocket connection closed');

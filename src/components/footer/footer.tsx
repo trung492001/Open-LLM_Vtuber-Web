@@ -3,7 +3,7 @@ import {
 } from '@chakra-ui/react';
 import { BsMicFill, BsPaperclip } from 'react-icons/bs';
 import { IoHandRightSharp } from 'react-icons/io5';
-import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
+import { FiChevronDown } from 'react-icons/fi';
 import { InputGroup } from '@/components/ui/input-group';
 import { footerStyles } from './footer-styles';
 import AIStateIndicator from './ai-state-indicator';
