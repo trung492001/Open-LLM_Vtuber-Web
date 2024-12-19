@@ -10,8 +10,8 @@ export interface ModelInfo {
   initialYshift: number;          // Initial Y position shift
   kXOffset?: number;             // X-axis offset coefficient
   idleMotionGroupName?: string;   // Idle motion group name
-  emotionMap?: {                  // Emotion mapping
-    [key: string]: number;        // Maps emotion names to motion indices
+  emotionMap: {
+    [key: string]: number | string; 
   };
 }
 interface L2DContextType {

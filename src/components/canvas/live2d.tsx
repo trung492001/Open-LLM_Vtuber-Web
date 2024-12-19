@@ -7,6 +7,7 @@ import { SubtitleContext } from '@/context/subtitle-context';
 import { ResponseContext } from '@/context/response-context';
 import { audioTaskQueue } from '@/utils/task-queue';
 import { WebSocketContext } from '@/context/websocket-context';
+import { useChatHistory } from '@/context/chat-history-context';
 
 const pointerInteractionEnabled = false;
 
@@ -241,6 +242,8 @@ export function useAudioTask() {
   const { aiState } = useContext(AiStateContext)!;
   const { setSubtitleText } = useContext(SubtitleContext)!;
   const { appendResponse } = useContext(ResponseContext)!;
+  const { appendAIMessage } = useChatHistory();
+
   const handleAudioPlayback = (options: AudioTaskOptions, onComplete: () => void) => {
     if (aiState === 'interrupted') {
       console.error('Audio playback blocked. State:', aiState);
@@ -252,6 +255,7 @@ export function useAudioTask() {
 
     if (text) {
       appendResponse(text);
+      appendAIMessage(text);
       setSubtitleText(text);
     }
 

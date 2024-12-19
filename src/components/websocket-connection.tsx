@@ -8,8 +8,12 @@ import { audioTaskQueue } from '@/utils/task-queue';
 import { ResponseContext } from '@/context/response-context';
 import { useAudioTask } from '@/components/canvas/live2d';
 import { BgUrlContext } from '@/context/bgurl-context';
+import { useConfig } from '@/context/config-context';
+import { useChatHistory } from '@/context/chat-history-context';
+import { toaster } from "@/components/ui/toaster";
 
 const wsUrl = "ws://127.0.0.1:12393/client-ws";
+
 
 function WebSocketConnection({ children }: { children: React.ReactNode }) {
   const { aiState, setAiState } = useContext(AiStateContext)!;
@@ -18,6 +22,8 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
   const { clearResponse } = useContext(ResponseContext)!;
   const { addAudioTask } = useAudioTask();
   const bgUrlContext = useContext(BgUrlContext);
+  const { setConfName, setConfUid } = useConfig();
+  const { setHistoryUids, setCurrentHistoryUid, setMessages } = useChatHistory();
 
   const handleWebSocketMessage = (message: MessageEvent) => {
     console.log('Received message from server:', message);
@@ -62,6 +68,53 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
           });
         }
         break;
+      case 'config-info':
+        if (message.conf_name) {
+          setConfName(message.conf_name);
+        }
+        if (message.conf_uid) {
+          setConfUid(message.conf_uid);
+        }
+        break;
+      case 'history-uids':
+        if (message.uids) {
+          setHistoryUids(message.uids);
+          if (message.uids.length > 0) {
+            setCurrentHistoryUid(message.uids[message.uids.length - 1]);
+          }
+        }
+        break;
+      case 'history-data':
+        if (message.messages) {
+          setMessages(message.messages);
+        }
+        toaster.create({
+          title: 'History loaded',
+          type: 'success',
+          duration: 2000,
+        });
+        break;
+      case 'new-history-created':
+        if (message.history_uid) {
+          setCurrentHistoryUid(message.history_uid);
+          setMessages([]);
+          sendMessage({ type: 'fetch-history-uids' });
+        }
+        toaster.create({
+          title: 'New chat history created',
+          type: 'success',
+          duration: 2000,
+        });
+        break;
+      case 'history-deleted':
+        toaster.create({
+          title: message.success
+            ? "History deleted successfully"
+            : "Failed to delete history",
+          type: message.success ? "success" : "error",
+          duration: 2000,
+        });
+        break;
       default:
         console.warn('Unknown message type:', message.type);
     }
@@ -93,6 +146,9 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
     onMessage: handleWebSocketMessage,
     onOpen: () => {
       console.log('WebSocket connection opened');
+      sendMessage({
+        type: "fetch-history-uids"
+      });
       sendMessage({
         type: "fetch-backgrounds"
       });

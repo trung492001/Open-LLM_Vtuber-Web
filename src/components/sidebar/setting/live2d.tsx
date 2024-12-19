@@ -10,10 +10,51 @@ import {
 import { Field } from '@/components/ui/field';
 import { useState, useEffect, useContext } from 'react';
 import { L2DContext, ModelInfo } from '@/context/l2d-context';
+import { settingStyles } from './setting-styles';
 
 interface Live2dProps {
   onSave?: (callback: () => void) => (() => void);
   onCancel?: (callback: () => void) => (() => void);
+}
+
+interface NumberFieldProps {
+  label: string;
+  value: number | undefined;
+  onChange: (value: number | string) => void;
+  step?: number;
+}
+
+function NumberField({ label, value, onChange, step = 1 }: NumberFieldProps) {
+  return (
+    <Field 
+      {...settingStyles.live2d.field} 
+      label={<Text {...settingStyles.live2d.fieldLabel}>{label}</Text>}
+    >
+      <NumberInput.Root
+        {...settingStyles.live2d.numberInput.root}
+        value={value?.toString() ?? ""}
+        onValueChange={(details) => {
+          const val = details.value;
+          if (val === "" || val === "-") {
+            onChange(val);
+          } else {
+            const parsed = Number(val);
+            if (!isNaN(parsed)) {
+              onChange(parsed);
+            }
+          }
+        }}
+        step={step}
+        allowMouseWheel
+      >
+        <NumberInput.Input {...settingStyles.live2d.numberInput.input} />
+        <NumberInput.Control>
+          <NumberInput.IncrementTrigger />
+          <NumberInput.DecrementTrigger />
+        </NumberInput.Control>
+      </NumberInput.Root>
+    </Field>
+  );
 }
 
 function Live2d({ onSave, onCancel }: Live2dProps) {
@@ -95,130 +136,53 @@ function Live2d({ onSave, onCancel }: Live2dProps) {
   }, [modelInfo, l2dContext]);
 
   return (
-    <Stack gap="8" maxW="sm" css={{ "--field-label-width": "120px" }}>
-      <Field orientation="horizontal" label="Model URL">
+    <Stack {...settingStyles.live2d.container}>
+      <Field 
+        {...settingStyles.live2d.field} 
+        label={<Text {...settingStyles.live2d.fieldLabel}>Model URL</Text>}
+      >
         <Input
-          flex="1"
+          {...settingStyles.live2d.input}
           value={modelInfo.url || ''}
           onChange={(e) => handleInputChange('url', e.target.value)}
-          placeholder="请输入模型 URL"
+          placeholder="Please enter the model URL"
         />
       </Field>
 
-      <Field orientation="horizontal" label="Scale Factor (kScale)">
-        <NumberInput.Root
-          pattern="[0-9-]*(\.[0-9]*)?"
-          inputMode="decimal"
-          value={modelInfo.kScale?.toString() ?? ""}
-          onValueChange={(details) => {
-            const val = details.value;
-            if (val === "" || val === "-") {
-              handleInputChange("kScale", val);
-            } else {
-              const parsed = Number(val);
-              if (!isNaN(parsed)) {
-                handleInputChange("kScale", parsed);
-              }
-            }
-          }}
-          step={0.0001}
-          allowMouseWheel
-        >
-          <NumberInput.Input />
-          <NumberInput.Control>
-            <NumberInput.IncrementTrigger />
-            <NumberInput.DecrementTrigger />
-          </NumberInput.Control>
-        </NumberInput.Root>
-      </Field>
+      <NumberField
+        label="Scale Factor (kScale)"
+        value={modelInfo.kScale}
+        onChange={(val) => handleInputChange('kScale', val)}
+        step={0.0001}
+      />
 
-      <Field orientation="horizontal" label="Horizontal Shift (initialXshift)">
-        <NumberInput.Root
-          pattern="[0-9-]*(\.[0-9]*)?"
-          inputMode="decimal"
-          value={modelInfo.initialXshift?.toString() ?? ""}
-          onValueChange={(details) => {
-            const val = details.value;
-            if (val === "" || val === "-") {
-              handleInputChange("initialXshift", val);
-            } else {
-              const parsed = Number(val);
-              if (!isNaN(parsed)) {
-                handleInputChange("initialXshift", parsed);
-              }
-            }
-          }}
-          step={10}
-          allowMouseWheel
-        >
-          <NumberInput.Input />
-          <NumberInput.Control>
-            <NumberInput.IncrementTrigger />
-            <NumberInput.DecrementTrigger />
-          </NumberInput.Control>
-        </NumberInput.Root>
-      </Field>
+      <NumberField
+        label="Horizontal Shift (initialXshift)"
+        value={modelInfo.initialXshift}
+        onChange={(val) => handleInputChange('initialXshift', val)}
+        step={10}
+      />
 
-      <Field orientation="horizontal" label="Vertical Shift (initialYshift)">
-        <NumberInput.Root
-          pattern="[0-9-]*(\.[0-9]*)?"
-          inputMode="decimal"
-          value={modelInfo.initialYshift?.toString() ?? ""}
-          onValueChange={(details) => {
-            const val = details.value;
-            if (val === "" || val === "-") {
-              handleInputChange("initialYshift", val);
-            } else {
-              const parsed = Number(val);
-              if (!isNaN(parsed)) {
-                handleInputChange("initialYshift", parsed);
-              }
-            }
-          }}
-          step={10}
-          allowMouseWheel
-        >
-          <NumberInput.Input />
-          <NumberInput.Control>
-            <NumberInput.IncrementTrigger />
-            <NumberInput.DecrementTrigger />
-          </NumberInput.Control>
-        </NumberInput.Root>
-      </Field>
+      <NumberField
+        label="Vertical Shift (initialYshift)"
+        value={modelInfo.initialYshift}
+        onChange={(val) => handleInputChange('initialYshift', val)}
+        step={10}
+      />
 
-      <Field orientation="horizontal" label="X-axis Offset (kXOffset)">
-        <NumberInput.Root
-          pattern="[0-9-]*(\.[0-9]*)?"
-          inputMode="decimal"
-          value={modelInfo.kXOffset?.toString() ?? ""}
-          onValueChange={(details) => {
-            const val = details.value;
-            if (val === "" || val === "-") {
-              handleInputChange("kXOffset", val);
-            } else {
-              const parsed = Number(val);
-              if (!isNaN(parsed)) {
-                handleInputChange("kXOffset", parsed);
-              }
-            }
-          }}
-          step={1}
-          allowMouseWheel
-        >
-          <NumberInput.Input />
-          <NumberInput.Control>
-            <NumberInput.IncrementTrigger />
-            <NumberInput.DecrementTrigger />
-          </NumberInput.Control>
-        </NumberInput.Root>
-      </Field>
+      <NumberField
+        label="X-axis Offset (kXOffset)"
+        value={modelInfo.kXOffset}
+        onChange={(val) => handleInputChange('kXOffset', val)}
+      />
 
       <Box>
-        <Text fontWeight="bold" mb={4}>Emotion Mapping</Text>
+        <Text {...settingStyles.live2d.emotionMap.title}>Emotion Mapping</Text>
         {modelInfo.emotionMap &&
           Object.entries(modelInfo.emotionMap).map(([key, value]) => (
-            <HStack key={key} mb={2}>
+            <HStack {...settingStyles.live2d.emotionMap.entry} key={key}>
               <Input
+                {...settingStyles.live2d.input}
                 value={key}
                 onChange={(e) => {
                   const newEmotionMap = { ...modelInfo.emotionMap };
@@ -229,14 +193,13 @@ function Live2d({ onSave, onCancel }: Live2dProps) {
                 placeholder="Emotion Name"
               />
               <NumberInput.Root
-                pattern="[0-9-]*(\.[0-9]*)?"
-                inputMode="decimal"
+                {...settingStyles.live2d.numberInput.root}
                 value={value?.toString() ?? ""}
                 onValueChange={(details) => {
                   const val = details.value;
                   const newEmotionMap = { ...modelInfo.emotionMap };
                   if (val === "" || val === "-") {
-                    newEmotionMap[key] = 0;
+                    newEmotionMap[key] = val;
                   } else {
                     const parsed = Number(val);
                     if (!isNaN(parsed)) {
@@ -248,14 +211,14 @@ function Live2d({ onSave, onCancel }: Live2dProps) {
                 step={1}
                 allowMouseWheel
               >
-                <NumberInput.Input />
+                <NumberInput.Input {...settingStyles.live2d.numberInput.input} />
                 <NumberInput.Control>
                   <NumberInput.IncrementTrigger />
                   <NumberInput.DecrementTrigger />
                 </NumberInput.Control>
               </NumberInput.Root>
               <Button 
-                colorPalette="red" 
+                {...settingStyles.live2d.emotionMap.deleteButton}
                 onClick={() => handleEmotionMapRemove(key)}
               >
                 Delete
@@ -263,9 +226,8 @@ function Live2d({ onSave, onCancel }: Live2dProps) {
             </HStack>
           ))}
         <Button 
+          {...settingStyles.live2d.emotionMap.button}
           onClick={handleEmotionMapAdd}
-          colorPalette="blue"
-          mt={2}
         >
           Add New Emotion
         </Button>

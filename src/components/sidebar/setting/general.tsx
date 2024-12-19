@@ -3,7 +3,8 @@ import {
   Field,
   createListCollection,
   Input,
-  Text,
+  Button,
+  HStack,
 } from '@chakra-ui/react';
 import {
   SelectContent,
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/select"
 import { useEffect, useState, useContext } from 'react';
 import { BgUrlContext } from '@/context/bgurl-context';
+import { settingStyles } from './setting-styles';
 
 interface GeneralProps {
   onSave?: (callback: () => void) => (() => void);
@@ -97,17 +99,29 @@ function General({ onSave, onCancel }: GeneralProps) {
     ],
   });
 
+  // const characters = createListCollection<{ label: string; value: string }>({
+  //   items: [],
+  // });
+
+  const handleSwitchCharacter = () => {
+    
+  };
+
+  const handleSaveCharacter = () => {
+    
+  };
+
   return (
-    <VStack align="stretch" gap={6} p={4}>
-      <Field.Root key="language-field">
+    <VStack {...settingStyles.general.container}>
+      <Field.Root {...settingStyles.general.field.root}>
         <SelectRoot
+          {...settingStyles.general.select.root}
           collection={languages}
-          width="100%"
           value={settings.language}
           onValueChange={(e) => handleSettingChange('language', e.value)}
         >
-          <SelectLabel>Language</SelectLabel>
-          <SelectTrigger>
+          <SelectLabel {...settingStyles.general.field.label}>Language</SelectLabel>
+          <SelectTrigger {...settingStyles.general.select.trigger}>
             <SelectValueText placeholder="Select language" />
           </SelectTrigger>
           <SelectContent>
@@ -120,9 +134,9 @@ function General({ onSave, onCancel }: GeneralProps) {
         </SelectRoot>
       </Field.Root>
 
-      <Field.Root key="background-field">
+      <Field.Root {...settingStyles.general.field.root}>
         <SelectRoot
-          width="100%"
+          {...settingStyles.general.select.root}
           value={settings.selectedBgUrl}
           onValueChange={(e) => handleSettingChange('selectedBgUrl', e.value)}
           collection={createListCollection({ 
@@ -132,8 +146,8 @@ function General({ onSave, onCancel }: GeneralProps) {
             })) || []
           })}
         >
-          <SelectLabel>Background Image</SelectLabel>
-          <SelectTrigger>
+          <SelectLabel {...settingStyles.general.field.label}>Background Image</SelectLabel>
+          <SelectTrigger {...settingStyles.general.select.trigger}>
             <SelectValueText placeholder="Select from available backgrounds" />
           </SelectTrigger>
           <SelectContent>
@@ -150,16 +164,28 @@ function General({ onSave, onCancel }: GeneralProps) {
           </SelectContent>
         </SelectRoot>
 
-        <Text fontSize="sm" color="whiteAlpha.600">
-          Or provide a custom URL:
-        </Text>
-
         <Input
+          {...settingStyles.general.input}
           placeholder="Enter image URL"
           value={settings.customBgUrl}
           onChange={(e) => handleSettingChange('customBgUrl', e.target.value)}
         />
       </Field.Root>
+
+      <HStack {...settingStyles.general.buttonGroup}>
+        <Button
+          {...settingStyles.general.button}
+          onClick={handleSwitchCharacter}
+        >
+          Switch Character
+        </Button>
+        <Button
+          {...settingStyles.general.button}
+          onClick={handleSaveCharacter}
+        >
+          Save Character
+        </Button>
+      </HStack>
     </VStack>
   );
 }

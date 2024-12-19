@@ -138,7 +138,7 @@ export const sidebarStyles = {
       borderColor: 'whiteAlpha.200',
       borderRadius: 'lg',
       bg: 'blackAlpha.400',
-      maxH: '200px',
+      height: '400px',
       overflowY: 'auto',
       css: {
         '&::-webkit-scrollbar': {
@@ -200,5 +200,84 @@ export const sidebarStyles = {
         bg: 'whiteAlpha.50',
       },
     },
+  },
+
+  cameraPanel: {
+    container: {
+      width: '100%',
+      overflow: 'hidden',
+      px: 4,
+      minH: '240px',
+    },
+    header: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      mb: 4,
+    },
+    title: {
+      fontSize: 'lg',
+      fontWeight: 'semibold',
+      color: 'white',
+    },
+    videoContainer: {
+      width: '100%',
+      height: '240px',
+      border: '1px solid',
+      borderColor: 'whiteAlpha.200',
+      borderRadius: 'lg',
+      bg: 'blackAlpha.400',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      transition: 'all 0.2s',
+      '@keyframes pulse': {
+        '0%': {
+          opacity: 1,
+        },
+        '50%': {
+          opacity: 0.5,
+        },
+        '100%': {
+          opacity: 1,
+        },
+      },
+    },
+  },
+
+  historyPopover: {
+    content: {
+      bg: 'gray.900',
+    },
+    historyButton: {
+      w: '100%',
+      mb: 2,
+      color: 'white',
+      fontFamily: 'mono',
+      textAlign: 'left',
+      fontSize: 'xs',
+      height: '32px',
+      px: 3,
+      _hover: { bg: 'whiteAlpha.200' },
+      _active: { bg: 'whiteAlpha.300' },
+      transition: 'all 0.2s ease-in-out',
+    },
+    deleteButton: {
+      variant: 'ghost' as const,
+      colorScheme: 'red' as const,
+      size: 'sm' as const,
+      mt: '-1.5',
+    },
+    historyButtonSelected: {
+      bg: 'whiteAlpha.300',
+      borderColor: 'blue.500',
+      borderWidth: '2px'
+    },
+    historyButtonNormal: {
+      bg: 'whiteAlpha.50',
+      borderColor: 'whiteAlpha.200',
+      borderWidth: '1px'
+    }
   },
 };

@@ -12,7 +12,10 @@ import WebsocketConnection from './components/websocket-connection';
 import { ResponseProvider } from './context/response-context';
 import { useState, useEffect } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
-
+import { CameraProvider } from '@/context/camera-context';
+import { ChatHistoryProvider } from '@/context/chat-history-context';
+import { ConfigProvider } from '@/context/config-context';
+import { Toaster } from "@/components/ui/toaster";
 const App: React.FC = () => {
   const [showSidebar, setShowSidebar] = useState(true);
   const [isFooterCollapsed, setIsFooterCollapsed] = useState(false);
@@ -38,49 +41,61 @@ const App: React.FC = () => {
 
   return (
     <ChakraProvider value={defaultSystem}>
-      <AiStateProvider>
-        <L2DProvider>
-          <SubtitleProvider>
-            <ResponseProvider>
-              <BgUrlProvider>
-                <WebsocketConnection>
-                  <Flex {...layoutStyles.appContainer}>
-                    {showSidebar && (
-                      <Box {...layoutStyles.sidebar}>
-                        <Sidebar onToggle={() => setShowSidebar(!showSidebar)} />
-                      </Box>
-                    )}
+      <Toaster />
+      <CameraProvider>
+        <AiStateProvider>
+          <L2DProvider>
+            <SubtitleProvider>
+              <ResponseProvider>
+                <BgUrlProvider>
+                  <ConfigProvider>
+                    <ChatHistoryProvider>
+                      <WebsocketConnection>
+                        <Flex {...layoutStyles.appContainer}>
+                          {showSidebar && (
+                            <Box {...layoutStyles.sidebar}>
+                              <Sidebar
+                                onToggle={() => setShowSidebar(!showSidebar)}
+                              />
+                            </Box>
+                          )}
 
-                    <Box {...layoutStyles.mainContent}>
-                      {!showSidebar && (
-                        <Button
-                          {...layoutStyles.sidebarToggleButton}
-                          onClick={() => setShowSidebar(true)}
-                        >
-                          <FiArrowRight />
-                        </Button>
-                      )}
-                      <Box {...layoutStyles.canvas}>
-                        <Canvas />
-                      </Box>
+                          <Box {...layoutStyles.mainContent}>
+                            {!showSidebar && (
+                              <Button
+                                {...layoutStyles.sidebarToggleButton}
+                                onClick={() => setShowSidebar(true)}
+                              >
+                                <FiArrowRight />
+                              </Button>
+                            )}
+                            <Box {...layoutStyles.canvas}>
+                              <Canvas />
+                            </Box>
 
-                      <Box 
-                        {...layoutStyles.footer} 
-                        {...(isFooterCollapsed && layoutStyles.collapsedFooter)}
-                      >
-                        <Footer 
-                          isCollapsed={isFooterCollapsed}
-                          onToggle={() => setIsFooterCollapsed(!isFooterCollapsed)}
-                        />
-                      </Box>
-                    </Box>
-                  </Flex>
-                </WebsocketConnection>
-              </BgUrlProvider>
-            </ResponseProvider>
-          </SubtitleProvider>
-        </L2DProvider>
-      </AiStateProvider>
+                            <Box
+                              {...layoutStyles.footer}
+                              {...(isFooterCollapsed &&
+                                layoutStyles.collapsedFooter)}
+                            >
+                              <Footer
+                                isCollapsed={isFooterCollapsed}
+                                onToggle={() =>
+                                  setIsFooterCollapsed(!isFooterCollapsed)
+                                }
+                              />
+                            </Box>
+                          </Box>
+                        </Flex>
+                      </WebsocketConnection>
+                    </ChatHistoryProvider>
+                  </ConfigProvider>
+                </BgUrlProvider>
+              </ResponseProvider>
+            </SubtitleProvider>
+          </L2DProvider>
+        </AiStateProvider>
+      </CameraProvider>
     </ChakraProvider>
   );
 };

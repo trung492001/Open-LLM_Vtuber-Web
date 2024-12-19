@@ -8,6 +8,7 @@ import { InputGroup } from '@/components/ui/input-group';
 import { footerStyles } from './footer-styles';
 import AIStateIndicator from './ai-state-indicator';
 import { useTextInput } from '@/hooks/use-text-input';
+import { useInterrupt } from '@/components/canvas/live2d';
 
 interface FooterProps {
   isCollapsed?: boolean;
@@ -20,7 +21,10 @@ function Footer({ isCollapsed = false, onToggle }: FooterProps) {
     inputValue,
     handleInputChange,
     handleKeyPress,
+    handleCompositionStart,
+    handleCompositionEnd,
   } = useTextInput();
+  const { interrupt } = useInterrupt();
 
   return (
     <Box {...styles.container(isCollapsed)}>
@@ -53,6 +57,7 @@ function Footer({ isCollapsed = false, onToggle }: FooterProps) {
                 aria-label="Raise hand"
                 bg="yellow.500"
                 {...styles.actionButton}
+                onClick={interrupt}
               >
                 <IoHandRightSharp size="24" />
               </IconButton>
@@ -72,6 +77,8 @@ function Footer({ isCollapsed = false, onToggle }: FooterProps) {
                 value={inputValue}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyPress}
+                onCompositionStart={handleCompositionStart}
+                onCompositionEnd={handleCompositionEnd}
                 placeholder="Type your message..."
                 {...styles.input}
               />

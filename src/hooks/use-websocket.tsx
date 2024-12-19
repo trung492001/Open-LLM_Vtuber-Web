@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ModelInfo } from '../context/l2d-context';
+import { Message } from '@/types/message';
 
 interface BackgroundFile {
   name: string;
@@ -15,6 +16,12 @@ interface MessageEvent {
   expressions?: string[];
   text?: string;
   model_info?: ModelInfo;
+  conf_name?: string;
+  conf_uid?: string;
+  uids?: string[];
+  messages?: Message[];
+  history_uid?: string;
+  success?: boolean;
 }
 
 interface UseWebSocketProps {
