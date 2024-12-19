@@ -1,7 +1,7 @@
 import {
-  Box, VStack, Button, useDisclosure,
+  Box, Button, useDisclosure,
 } from '@chakra-ui/react';
-import { FiSettings, FiArrowLeft, FiClock, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiSettings, FiClock, FiPlus, FiTrash2, FiChevronLeft } from "react-icons/fi";
 import {
   PopoverArrow,
   PopoverBody,
@@ -20,10 +20,11 @@ import { useState } from "react";
 import { useInterrupt } from '../canvas/live2d';
 
 interface SidebarProps {
+  isCollapsed?: boolean;
   onToggle: () => void;
 }
 
-function Sidebar({ onToggle }: SidebarProps) {
+function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const { open, onOpen, onClose } = useDisclosure();
   const { historyUids, currentHistoryUid, setCurrentHistoryUid, setHistoryUids } = useChatHistory();
   const { sendMessage } = useContext(WebSocketContext)!;
@@ -55,21 +56,27 @@ function Sidebar({ onToggle }: SidebarProps) {
   };
 
   return (
-    <VStack h="100%" w="100%" p={0} gap={4}>
-      {!open ? (
-        <>
+    <Box {...sidebarStyles.sidebar.container(isCollapsed)}>
+      <Box
+        {...sidebarStyles.sidebar.toggleButton}
+        style={{
+          transform: isCollapsed ? "rotate(180deg)" : "rotate(0deg)",
+        }}
+        onClick={onToggle}
+      >
+        <FiChevronLeft />
+      </Box>
+
+      {!isCollapsed && !open && (
+        <Box {...sidebarStyles.sidebar.content}>
           <Box {...sidebarStyles.sidebar.header}>
             <Box display="flex" gap={1}>
-              <Button onClick={onToggle}>
-                <FiArrowLeft />
-              </Button>
-
               <Button onClick={onOpen}>
                 <FiSettings />
               </Button>
 
-              <PopoverRoot 
-                open={popoverOpen} 
+              <PopoverRoot
+                open={popoverOpen}
                 onOpenChange={(e) => setPopoverOpen(e.open)}
                 modal={false}
                 closeOnEscape
@@ -94,8 +101,8 @@ function Sidebar({ onToggle }: SidebarProps) {
                         <Button
                           onClick={() => fetchHistory(uid)}
                           flex={1}
-                          {...(currentHistoryUid === uid 
-                            ? sidebarStyles.historyPopover.historyButtonSelected 
+                          {...(currentHistoryUid === uid
+                            ? sidebarStyles.historyPopover.historyButtonSelected
                             : sidebarStyles.historyPopover.historyButtonNormal)}
                           {...sidebarStyles.historyPopover.historyButton}
                         >
@@ -119,15 +126,15 @@ function Sidebar({ onToggle }: SidebarProps) {
             </Box>
           </Box>
 
-          <Box {...sidebarStyles.sidebar.container}>
-            <ChatHistoryPanel />
-            <CameraPanel />
-          </Box>
-        </>
-      ) : (
+          <ChatHistoryPanel />
+          <CameraPanel />
+        </Box>
+      )}
+
+      {!isCollapsed && open && (
         <SettingUI open={open} onClose={onClose} onToggle={onToggle} />
       )}
-    </VStack>
+    </Box>
   );
 }
 

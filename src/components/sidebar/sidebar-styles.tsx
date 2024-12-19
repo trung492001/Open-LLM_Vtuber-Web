@@ -1,10 +1,39 @@
 export const sidebarStyles = {
   sidebar: {
-    container: {
+    container: (isCollapsed: boolean) => ({
+      position: 'absolute' as const,
+      left: 0,
+      top: 0,
+      height: '100%',
+      width: '350px',
+      bg: 'gray.900',
+      transform: isCollapsed ? 'translateX(calc(-100% + 24px))' : 'translateX(0)',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      gap: 4,
+      overflow: isCollapsed ? 'visible' : 'hidden',
+    }),
+    toggleButton: {
+      position: 'absolute',
+      right: 0,
+      top: 0,
+      width: '24px',
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      color: 'whiteAlpha.700',
+      _hover: { color: 'white' },
+      bg: 'transparent',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    },
+    content: {
       flex: 1,
       width: '100%',
       display: 'flex',
-      flexDirection: 'column',
+      flexDirection: 'column' as const,
       gap: 4,
       overflow: 'hidden',
     },
@@ -138,6 +167,7 @@ export const sidebarStyles = {
       borderColor: 'whiteAlpha.200',
       borderRadius: 'lg',
       bg: 'blackAlpha.400',
+      width: '97%',
       height: '400px',
       overflowY: 'auto',
       css: {
@@ -204,7 +234,7 @@ export const sidebarStyles = {
 
   cameraPanel: {
     container: {
-      width: '100%',
+      width: '97%',
       overflow: 'hidden',
       px: 4,
       minH: '240px',

@@ -1,5 +1,5 @@
 // import { StrictMode } from 'react';
-import { Box, Flex, ChakraProvider, defaultSystem, Button } from '@chakra-ui/react';
+import { Box, Flex, ChakraProvider, defaultSystem } from '@chakra-ui/react';
 import Canvas from './components/canvas/canvas';
 import Sidebar from './components/sidebar/sidebar';
 import Footer from './components/footer/footer';
@@ -11,7 +11,6 @@ import { layoutStyles } from './layout';
 import WebsocketConnection from './components/websocket-connection';
 import { ResponseProvider } from './context/response-context';
 import { useState, useEffect } from 'react';
-import { FiArrowRight } from 'react-icons/fi';
 import { CameraProvider } from '@/context/camera-context';
 import { ChatHistoryProvider } from '@/context/chat-history-context';
 import { ConfigProvider } from '@/context/config-context';
@@ -52,37 +51,28 @@ const App: React.FC = () => {
                     <ChatHistoryProvider>
                       <WebsocketConnection>
                         <Flex {...layoutStyles.appContainer}>
-                          {showSidebar && (
-                            <Box {...layoutStyles.sidebar}>
-                              <Sidebar
-                                onToggle={() => setShowSidebar(!showSidebar)}
-                              />
-                            </Box>
-                          )}
+                          <Box 
+                            {...layoutStyles.sidebar}
+                            {...(!showSidebar && { width: '24px' })}
+                          >
+                            <Sidebar
+                              isCollapsed={!showSidebar}
+                              onToggle={() => setShowSidebar(!showSidebar)}
+                            />
+                          </Box>
 
                           <Box {...layoutStyles.mainContent}>
-                            {!showSidebar && (
-                              <Button
-                                {...layoutStyles.sidebarToggleButton}
-                                onClick={() => setShowSidebar(true)}
-                              >
-                                <FiArrowRight />
-                              </Button>
-                            )}
                             <Box {...layoutStyles.canvas}>
                               <Canvas />
                             </Box>
 
                             <Box
                               {...layoutStyles.footer}
-                              {...(isFooterCollapsed &&
-                                layoutStyles.collapsedFooter)}
+                              {...(isFooterCollapsed && layoutStyles.collapsedFooter)}
                             >
                               <Footer
                                 isCollapsed={isFooterCollapsed}
-                                onToggle={() =>
-                                  setIsFooterCollapsed(!isFooterCollapsed)
-                                }
+                                onToggle={() => setIsFooterCollapsed(!isFooterCollapsed)}
                               />
                             </Box>
                           </Box>
