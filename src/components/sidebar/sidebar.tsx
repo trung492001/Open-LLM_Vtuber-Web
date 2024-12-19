@@ -31,11 +31,11 @@ function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const { interrupt } = useInterrupt();
 
-  const fetchHistory = (uid: string) => {
+  const fetchAndSetHistory = (uid: string) => {
     if (!uid) return;
     setCurrentHistoryUid(uid);
     sendMessage({
-      type: 'fetch-history',
+      type: 'fetch-and-set-history',
       history_uid: uid,
     });
   };
@@ -99,7 +99,7 @@ function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                         mb={2}
                       >
                         <Button
-                          onClick={() => fetchHistory(uid)}
+                          onClick={() => fetchAndSetHistory(uid)}
                           flex={1}
                           {...(currentHistoryUid === uid
                             ? sidebarStyles.historyPopover.historyButtonSelected

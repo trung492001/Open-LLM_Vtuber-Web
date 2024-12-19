@@ -26,17 +26,30 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
       role: 'human',
       timestamp: new Date().toISOString(),
     };
-    setMessages(prev => [...prev, newMessage]);
+    setMessages(prevMessages => [...prevMessages, newMessage]);
   };
 
   const appendAIMessage = (content: string) => {
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      content,
-      role: 'ai',
-      timestamp: new Date().toISOString(),
-    };
-    setMessages(prev => [...prev, newMessage]);
+    setMessages(prevMessages => {
+      const lastMessage = prevMessages[prevMessages.length - 1];
+      
+      if (lastMessage && lastMessage.role === 'ai') {
+        const updatedMessages = [...prevMessages];
+        updatedMessages[updatedMessages.length - 1] = {
+          ...lastMessage,
+          content: lastMessage.content + content,
+        };
+        return updatedMessages;
+      }
+
+      const newMessage: Message = {
+        id: Date.now().toString(),
+        content,
+        role: 'ai',
+        timestamp: new Date().toISOString(),
+      };
+      return [...prevMessages, newMessage];
+    });
   };
 
   return (
