@@ -279,6 +279,22 @@ export const sidebarStyles = {
   historyPopover: {
     content: {
       bg: 'gray.900',
+      maxHeight: '300px',
+      border: '1px solid',
+      borderColor: 'whiteAlpha.200',
+      css: {
+        '&::-webkit-scrollbar': {
+          width: '4px',
+        },
+        '&::-webkit-scrollbar-track': {
+          bg: 'whiteAlpha.100',
+          borderRadius: 'full',
+        },
+        '&::-webkit-scrollbar-thumb': {
+          bg: 'whiteAlpha.300',
+          borderRadius: 'full',
+        },
+      },
     },
     historyButton: {
       w: '100%',
