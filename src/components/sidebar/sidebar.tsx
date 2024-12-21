@@ -9,7 +9,8 @@ import CameraPanel from './camera-panel';
 import { useContext } from "react";
 import { WebSocketContext } from '@/context/websocket-context';
 import { useInterrupt } from '../canvas/live2d';
-import HistoryPopover from './history-popover';
+import HistoryDrawer from './history-drawer';
+import { useChatHistory } from '@/context/chat-history-context';
 
 interface SidebarProps {
   isCollapsed?: boolean;
@@ -20,8 +21,14 @@ function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
   const { open, onOpen, onClose } = useDisclosure();
   const { sendMessage } = useContext(WebSocketContext)!;
   const { interrupt } = useInterrupt();
+  const { currentHistoryUid, messages, updateHistoryList } = useChatHistory();
 
   const createNewHistory = () => {
+    if (currentHistoryUid && messages.length > 0) {
+      const latestMessage = messages[messages.length - 1];
+      updateHistoryList(currentHistoryUid, latestMessage);
+    }
+
     interrupt();
     sendMessage({
       type: 'create-new-history',
@@ -48,11 +55,11 @@ function Sidebar({ isCollapsed = false, onToggle }: SidebarProps) {
                 <FiSettings />
               </Button>
 
-              <HistoryPopover>
+              <HistoryDrawer>
                 <Button>
                   <FiClock />
                 </Button>
-              </HistoryPopover>
+              </HistoryDrawer>
 
               <Button onClick={createNewHistory}>
                 <FiPlus />

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AiStateContext } from '@/context/ai-state-context';
 import { useWebSocket, MessageEvent } from '@/hooks/use-websocket';
 import { WebSocketContext } from '@/context/websocket-context';
@@ -11,6 +11,7 @@ import { BgUrlContext } from '@/context/bgurl-context';
 import { useConfig } from '@/context/config-context';
 import { useChatHistory } from '@/context/chat-history-context';
 import { toaster } from "@/components/ui/toaster";
+import { HistoryInfo } from '@/context/websocket-context';
 
 const wsUrl = "ws://127.0.0.1:12393/client-ws";
 
@@ -23,7 +24,8 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
   const { addAudioTask } = useAudioTask();
   const bgUrlContext = useContext(BgUrlContext);
   const { setConfName, setConfUid } = useConfig();
-  const { setHistoryUids, setCurrentHistoryUid, setMessages } = useChatHistory();
+  const { setCurrentHistoryUid, setMessages, setHistoryList } = useChatHistory();
+  const [histories, setHistories] = useState<HistoryInfo[]>([]);
 
   const handleWebSocketMessage = (message: MessageEvent) => {
     console.log('Received message from server:', message);
@@ -56,6 +58,9 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
         }
         break;
       case 'audio':
+        // sendMessage({
+        //   type: "fetch-history-list",
+        // });
         if (aiState === 'interrupted') {
           console.log('Audio playback intercepted. Sentence:', message.text);
         } else {
@@ -76,14 +81,6 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
           setConfUid(message.conf_uid);
         }
         break;
-      case 'history-uids':
-        if (message.uids) {
-          setHistoryUids(message.uids);
-          if (message.uids.length > 0) {
-            setCurrentHistoryUid(message.uids[message.uids.length - 1]);
-          }
-        }
-        break;
       case 'history-data':
         if (message.messages) {
           setMessages(message.messages);
@@ -98,13 +95,18 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
         if (message.history_uid) {
           setCurrentHistoryUid(message.history_uid);
           setMessages([]);
-          sendMessage({ type: 'fetch-history-uids' });
+          const newHistory: HistoryInfo = {
+            uid: message.history_uid,
+            latest_message: null,
+            timestamp: new Date().toISOString()
+          };
+          setHistoryList((prev: HistoryInfo[]) => [newHistory, ...prev]);
+          toaster.create({
+            title: 'New chat history created',
+            type: 'success',
+            duration: 2000,
+          });
         }
-        toaster.create({
-          title: 'New chat history created',
-          type: 'success',
-          duration: 2000,
-        });
         break;
       case 'history-deleted':
         toaster.create({
@@ -114,6 +116,15 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
           type: message.success ? "success" : "error",
           duration: 2000,
         });
+        break;
+      case 'history-list':
+        if (message.histories) {
+          setHistories(message.histories);
+          setHistoryList(message.histories);
+          if (message.histories.length > 0) {
+            setCurrentHistoryUid(message.histories[0].uid);
+          }
+        }
         break;
       default:
         console.warn('Unknown message type:', message.type);
@@ -147,9 +158,6 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
     onOpen: () => {
       console.log('WebSocket connection opened');
       sendMessage({
-        type: "fetch-history-uids"
-      });
-      sendMessage({
         type: "fetch-backgrounds"
       });
     },
@@ -162,6 +170,8 @@ function WebSocketConnection({ children }: { children: React.ReactNode }) {
     sendMessage,
     wsState,
     reconnect,
+    histories,
+    setHistories,
   };
 
   return (

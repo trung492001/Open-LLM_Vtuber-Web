@@ -5,7 +5,6 @@ import {
   Button,
 
 } from '@chakra-ui/react';
-import { FiArrowLeft } from 'react-icons/fi';
 import { sidebarStyles } from '../sidebar-styles';
 import General from './general';
 import Live2d from './live2d';
@@ -21,7 +20,7 @@ interface SettingUIProps {
   onToggle: () => void;
 }
 
-function SettingUI({ open, onClose, onToggle }: SettingUIProps) {
+function SettingUI({ open, onClose }: SettingUIProps) {
   const [saveHandlers, setSaveHandlers] = useState<(() => void)[]>([]);
   const [cancelHandlers, setCancelHandlers] = useState<(() => void)[]>([]);
 
@@ -54,9 +53,6 @@ function SettingUI({ open, onClose, onToggle }: SettingUIProps) {
   return (
     <VStack {...sidebarStyles.settingUI.container}>
       <Box {...sidebarStyles.settingUI.header}>
-        <Button onClick={onToggle}>
-          <FiArrowLeft />
-        </Button>
         <Box {...sidebarStyles.settingUI.title}>
           Settings
         </Box>

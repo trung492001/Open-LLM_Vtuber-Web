@@ -1,22 +1,24 @@
 import React, { createContext, useContext, useState } from 'react';
 import { Message } from '@/types/message';
+import { HistoryInfo } from './websocket-context';
 
 interface ChatHistoryContextProps {
   messages: Message[];
-  historyUids: string[];
+  historyList: HistoryInfo[];
   currentHistoryUid: string | null;
   appendHumanMessage: (content: string) => void;
   appendAIMessage: (content: string) => void;
   setMessages: (messages: Message[]) => void;
-  setHistoryUids: (uids: string[]) => void;
+  setHistoryList: (value: HistoryInfo[] | ((prev: HistoryInfo[]) => HistoryInfo[])) => void;
   setCurrentHistoryUid: (uid: string | null) => void;
+  updateHistoryList: (uid: string, latestMessage: Message | null) => void;
 }
 
 export const ChatHistoryContext = createContext<ChatHistoryContextProps | null>(null);
 
 export function ChatHistoryProvider({ children }: { children: React.ReactNode }) {
   const [messages, setMessages] = useState<Message[]>([]);
-  const [historyUids, setHistoryUids] = useState<string[]>([]);
+  const [historyList, setHistoryList] = useState<HistoryInfo[]>([]);
   const [currentHistoryUid, setCurrentHistoryUid] = useState<string | null>(null);
 
   const appendHumanMessage = (content: string) => {
@@ -34,11 +36,12 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
       const lastMessage = prevMessages[prevMessages.length - 1];
       
       if (lastMessage && lastMessage.role === 'ai') {
-        const updatedMessages = [...prevMessages];
-        updatedMessages[updatedMessages.length - 1] = {
+        const updatedMessage = {
           ...lastMessage,
           content: lastMessage.content + content,
         };
+        const updatedMessages = [...prevMessages];
+        updatedMessages[updatedMessages.length - 1] = updatedMessage;
         return updatedMessages;
       }
 
@@ -52,17 +55,39 @@ export function ChatHistoryProvider({ children }: { children: React.ReactNode })
     });
   };
 
+  const updateHistoryList = (uid: string, latestMessage: Message | null) => {
+    if (!uid) console.error('updateHistoryList: uid is null');
+    if (!currentHistoryUid) console.error('updateHistoryList: currentHistoryUid is null');
+    setHistoryList(prevList => {
+      return prevList.map(history => {
+        if (history.uid === uid) {
+          return {
+            ...history,
+            latest_message: latestMessage ? {
+              content: latestMessage.content,
+              role: latestMessage.role,
+              timestamp: latestMessage.timestamp
+            } : null,
+            timestamp: latestMessage?.timestamp || history.timestamp
+          };
+        }
+        return history;
+      });
+    });
+  };
+
   return (
     <ChatHistoryContext.Provider 
       value={{ 
-        messages, 
-        historyUids,
+        messages,
+        historyList,
         currentHistoryUid,
         appendHumanMessage, 
         appendAIMessage, 
         setMessages,
-        setHistoryUids,
+        setHistoryList,
         setCurrentHistoryUid,
+        updateHistoryList,
       }}
     >
       {children}

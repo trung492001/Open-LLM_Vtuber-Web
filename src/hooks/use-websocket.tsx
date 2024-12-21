@@ -1,11 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { ModelInfo } from '../context/l2d-context';
 import { Message } from '@/types/message';
+import { HistoryInfo } from '@/context/websocket-context';
 
 interface BackgroundFile {
   name: string;
   url: string;
 }
+
 
 interface MessageEvent {
   type: string;
@@ -22,6 +24,7 @@ interface MessageEvent {
   messages?: Message[];
   history_uid?: string;
   success?: boolean;
+  histories?: HistoryInfo[];
 }
 
 interface UseWebSocketProps {
