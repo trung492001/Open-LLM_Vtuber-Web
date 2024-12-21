@@ -79,13 +79,10 @@ function HistoryDrawer({ children }: HistoryDrawerProps) {
     >
       <DrawerBackdrop />
       <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent style={{ 
-        background: 'var(--chakra-colors-gray-900)',
-        maxWidth: '350px'
-      }}>
+      <DrawerContent style={sidebarStyles.historyDrawer.drawer.content}>
         <DrawerHeader>
-          <DrawerTitle style={{ color: 'white' }}>Chat History List</DrawerTitle>
-          <DrawerCloseTrigger style={{ color: 'white' }} />
+          <DrawerTitle style={sidebarStyles.historyDrawer.drawer.title}>Chat History List</DrawerTitle>
+          <DrawerCloseTrigger style={sidebarStyles.historyDrawer.drawer.closeButton} />
         </DrawerHeader>
         
         <DrawerBody>
@@ -132,7 +129,7 @@ function HistoryDrawer({ children }: HistoryDrawerProps) {
 
         <DrawerFooter>
           <DrawerActionTrigger asChild>
-            <Button variant="outline" style={{ color: 'white', borderColor: 'white' }}>
+            <Button {...sidebarStyles.historyDrawer.drawer.actionButton}>
               Close
             </Button>
           </DrawerActionTrigger>

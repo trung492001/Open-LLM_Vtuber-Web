@@ -1,3 +1,31 @@
+const commonStyles = {
+  scrollbar: {
+    "&::-webkit-scrollbar": {
+      width: "4px",
+    },
+    "&::-webkit-scrollbar-track": {
+      bg: "whiteAlpha.100",
+      borderRadius: "full",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      bg: "whiteAlpha.300",
+      borderRadius: "full",
+    },
+  },
+  panel: {
+    border: "1px solid",
+    borderColor: "whiteAlpha.200",
+    borderRadius: "lg",
+    bg: "blackAlpha.400",
+  },
+  title: {
+    fontSize: "lg",
+    fontWeight: "semibold",
+    color: "white",
+    mb: 4,
+  }
+}
+
 export const sidebarStyles = {
   sidebar: {
     container: (isCollapsed: boolean) => ({
@@ -5,7 +33,7 @@ export const sidebarStyles = {
       left: 0,
       top: 0,
       height: "100%",
-      width: "350px",
+      width: "440px",
       bg: "gray.900",
       transform: isCollapsed
         ? "translateX(calc(-100% + 24px))"
@@ -48,78 +76,46 @@ export const sidebarStyles = {
     },
   },
 
-  settingUI: {
+  chatHistoryPanel: {
     container: {
-      width: "100%",
-      height: "100%",
+      flex: 1,
+      overflow: "hidden",
+      px: 4,
+    },
+    title: commonStyles.title,
+    messageList: {
+      ...commonStyles.panel,
       p: 4,
-      gap: 4,
-      position: "relative",
+      width: "97%",
+      height: "400px",
       overflowY: "auto",
-      css: {
-        "&::-webkit-scrollbar": {
-          width: "4px",
-        },
-        "&::-webkit-scrollbar-track": {
-          bg: "whiteAlpha.100",
-          borderRadius: "full",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          bg: "whiteAlpha.300",
-          borderRadius: "full",
-        },
-      },
-    },
-    header: {
-      width: "100%",
-      display: "flex",
-      alignItems: "center",
-      gap: 1,
-    },
-    title: {
-      ml: 4,
-      fontSize: "lg",
-      fontWeight: "bold",
-    },
-    tabs: {
-      root: {
-        width: "100%",
-        variant: "line" as const,
-        colorPalette: "gray",
-      },
-      content: {},
-      trigger: {
-        color: "whiteAlpha.600",
-        _selected: {
-          color: "white",
-        },
-        _hover: {
-          color: "white",
-        },
-      },
-    },
-    footer: {
-      width: "100%",
-      display: "flex",
-      justifyContent: "flex-end",
-      gap: 2,
-      mt: "auto",
-      pt: 4,
-      borderTop: "1px solid",
-      borderColor: "whiteAlpha.200",
+      css: commonStyles.scrollbar,
     },
   },
 
-  configCard: {
+  systemLogPanel: {
     container: {
-      flex: 1,
-      px: 3,
-      py: 0,
-      bg: "whiteAlpha.100",
-      borderRadius: "12px",
-      border: "1px solid",
-      borderColor: "whiteAlpha.200",
-      maxWidth: "150px",
+      width: "100%",
+      overflow: "hidden",
+      px: 4,
+      minH: "200px",
+      marginTop: "auto",
+    },
+    title: commonStyles.title,
+    logList: {
+      ...commonStyles.panel,
+      p: 4,
+      height: "200px",
+      overflowY: "auto",
+      fontFamily: "mono",
+      css: commonStyles.scrollbar,
+    },
+    entry: {
+      p: 2,
+      borderRadius: "md",
+      _hover: {
+        bg: "whiteAlpha.50",
+      },
     },
   },
 
@@ -147,184 +143,6 @@ export const sidebarStyles = {
       borderRadius: "full",
       bg: "white",
       top: "2",
-    },
-  },
-
-  chatHistoryPanel: {
-    container: {
-      flex: 1,
-      overflow: "hidden",
-      px: 4,
-    },
-    title: {
-      mb: 4,
-      fontSize: "lg",
-      fontWeight: "semibold",
-      color: "white",
-    },
-    messageList: {
-      p: 4,
-      border: "1px solid",
-      borderColor: "whiteAlpha.200",
-      borderRadius: "lg",
-      bg: "blackAlpha.400",
-      width: "97%",
-      height: "400px",
-      overflowY: "auto",
-      css: {
-        "&::-webkit-scrollbar": {
-          width: "4px",
-        },
-        "&::-webkit-scrollbar-track": {
-          bg: "whiteAlpha.100",
-          borderRadius: "full",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          bg: "whiteAlpha.300",
-          borderRadius: "full",
-        },
-      },
-    },
-  },
-
-  systemLogPanel: {
-    container: {
-      width: "100%",
-      overflow: "hidden",
-      px: 4,
-      minH: "200px",
-      marginTop: "auto",
-    },
-    title: {
-      mb: 4,
-      fontSize: "lg",
-      fontWeight: "semibold",
-      color: "white",
-    },
-    logList: {
-      p: 4,
-      border: "1px solid",
-      borderColor: "whiteAlpha.200",
-      borderRadius: "lg",
-      bg: "blackAlpha.400",
-      height: "200px",
-      overflowY: "auto",
-      fontFamily: "mono",
-      css: {
-        "&::-webkit-scrollbar": {
-          width: "4px",
-        },
-        "&::-webkit-scrollbar-track": {
-          bg: "whiteAlpha.100",
-          borderRadius: "full",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          bg: "whiteAlpha.300",
-          borderRadius: "full",
-        },
-      },
-    },
-    entry: {
-      p: 2,
-      borderRadius: "md",
-      _hover: {
-        bg: "whiteAlpha.50",
-      },
-    },
-  },
-
-  cameraPanel: {
-    container: {
-      width: "97%",
-      overflow: "hidden",
-      px: 4,
-      minH: "240px",
-    },
-    header: {
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      mb: 4,
-    },
-    title: {
-      fontSize: "lg",
-      fontWeight: "semibold",
-      color: "white",
-    },
-    videoContainer: {
-      width: "100%",
-      height: "240px",
-      border: "1px solid",
-      borderColor: "whiteAlpha.200",
-      borderRadius: "lg",
-      bg: "blackAlpha.400",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      overflow: "hidden",
-      transition: "all 0.2s",
-      "@keyframes pulse": {
-        "0%": {
-          opacity: 1,
-        },
-        "50%": {
-          opacity: 0.5,
-        },
-        "100%": {
-          opacity: 1,
-        },
-      },
-    },
-  },
-
-  historyPopover: {
-    content: {
-      bg: "gray.900",
-      maxHeight: "300px",
-      border: "1px solid",
-      borderColor: "whiteAlpha.200",
-      css: {
-        "&::-webkit-scrollbar": {
-          width: "4px",
-        },
-        "&::-webkit-scrollbar-track": {
-          bg: "whiteAlpha.100",
-          borderRadius: "full",
-        },
-        "&::-webkit-scrollbar-thumb": {
-          bg: "whiteAlpha.300",
-          borderRadius: "full",
-        },
-      },
-    },
-    historyButton: {
-      w: "100%",
-      mb: 2,
-      color: "white",
-      fontFamily: "mono",
-      textAlign: "left",
-      fontSize: "xs",
-      height: "32px",
-      px: 3,
-      _hover: { bg: "whiteAlpha.200" },
-      _active: { bg: "whiteAlpha.300" },
-      transition: "all 0.2s ease-in-out",
-    },
-    deleteButton: {
-      variant: "ghost" as const,
-      colorScheme: "red" as const,
-      size: "sm" as const,
-      mt: "-1.5",
-    },
-    historyButtonSelected: {
-      bg: "whiteAlpha.300",
-      borderColor: "blue.500",
-      borderWidth: "2px",
-    },
-    historyButtonNormal: {
-      bg: "whiteAlpha.50",
-      borderColor: "whiteAlpha.200",
-      borderWidth: "1px",
     },
   },
 
@@ -379,6 +197,49 @@ export const sidebarStyles = {
       noOfLines: 2,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
+    },
+    drawer: {
+      content: {
+        background: 'var(--chakra-colors-gray-900)',
+        maxWidth: '440px',
+      },
+      title: {
+        color: 'white',
+      },
+      closeButton: {
+        color: 'white',
+      },
+      actionButton: {
+        color: 'white',
+        borderColor: 'white',
+        variant: 'outline' as const,
+      },
+    },
+  },
+
+  cameraPanel: {
+    container: {
+      width: "97%",
+      overflow: "hidden",
+      px: 4,
+      minH: "240px",
+    },
+    header: {
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      mb: 4,
+    },
+    title: commonStyles.title,
+    videoContainer: {
+      ...commonStyles.panel,
+      width: "100%",
+      height: "240px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+      transition: "all 0.2s",
     },
   },
 };

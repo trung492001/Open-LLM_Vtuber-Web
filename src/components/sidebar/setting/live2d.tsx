@@ -46,11 +46,12 @@ function NumberField({ label, value, onChange, step = 1 }: NumberFieldProps) {
         }}
         step={step}
         allowMouseWheel
+        pattern="^-?[0-9]*\.?[0-9]*$"
       >
         <NumberInput.Input {...settingStyles.live2d.numberInput.input} />
         <NumberInput.Control>
-          <NumberInput.IncrementTrigger />
-          <NumberInput.DecrementTrigger />
+          <NumberInput.IncrementTrigger key="increment" />
+          <NumberInput.DecrementTrigger key="decrement" />
         </NumberInput.Control>
       </NumberInput.Root>
     </Field>
@@ -179,9 +180,10 @@ function Live2d({ onSave, onCancel }: Live2dProps) {
       <Box>
         <Text {...settingStyles.live2d.emotionMap.title}>Emotion Mapping</Text>
         {modelInfo.emotionMap &&
-          Object.entries(modelInfo.emotionMap).map(([key, value]) => (
-            <HStack {...settingStyles.live2d.emotionMap.entry} key={key}>
+          Object.entries(modelInfo.emotionMap).map(([key, value], index) => (
+            <HStack {...settingStyles.live2d.emotionMap.entry} key={`emotion-${key}-${index}`}>
               <Input
+                key={`input-${key}-${index}`}
                 {...settingStyles.live2d.input}
                 value={key}
                 onChange={(e) => {
@@ -193,6 +195,7 @@ function Live2d({ onSave, onCancel }: Live2dProps) {
                 placeholder="Emotion Name"
               />
               <NumberInput.Root
+                key={`number-input-${key}-${index}`}
                 {...settingStyles.live2d.numberInput.root}
                 value={value?.toString() ?? ""}
                 onValueChange={(details) => {
@@ -210,14 +213,16 @@ function Live2d({ onSave, onCancel }: Live2dProps) {
                 }}
                 step={1}
                 allowMouseWheel
+                pattern="^-?[0-9]*\.?[0-9]*$"
               >
-                <NumberInput.Input {...settingStyles.live2d.numberInput.input} />
-                <NumberInput.Control>
-                  <NumberInput.IncrementTrigger />
-                  <NumberInput.DecrementTrigger />
+                <NumberInput.Input key={`number-input-field-${key}-${index}`} {...settingStyles.live2d.numberInput.input} />
+                <NumberInput.Control key={`number-input-control-${key}-${index}`}>
+                  <NumberInput.IncrementTrigger key={`increment-${key}-${index}`} />
+                  <NumberInput.DecrementTrigger key={`decrement-${key}-${index}`} />
                 </NumberInput.Control>
               </NumberInput.Root>
               <Button 
+                key={`delete-button-${key}-${index}`}
                 {...settingStyles.live2d.emotionMap.deleteButton}
                 onClick={() => handleEmotionMapRemove(key)}
               >

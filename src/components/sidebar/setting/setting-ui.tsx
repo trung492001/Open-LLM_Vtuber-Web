@@ -1,11 +1,19 @@
 import {
-  Box,
   Tabs,
-  VStack,
   Button,
-
+  DrawerRoot,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerBody,
+  DrawerFooter,
+  DrawerBackdrop,
+  DrawerCloseTrigger,
 } from '@chakra-ui/react';
-import { sidebarStyles } from '../sidebar-styles';
+import { CloseButton } from "@/components/ui/close-button";
+
+
+import { settingStyles } from './setting-styles';
 import General from './general';
 import Live2d from './live2d';
 import ASR from './asr';
@@ -48,63 +56,122 @@ function SettingUI({ open, onClose }: SettingUIProps) {
     onClose();
   };
 
-  if (!open) return null;
-
   return (
-    <VStack {...sidebarStyles.settingUI.container}>
-      <Box {...sidebarStyles.settingUI.header}>
-        <Box {...sidebarStyles.settingUI.title}>
-          Settings
-        </Box>
-      </Box>
+    <DrawerRoot
+      open={open}
+      onOpenChange={(e) => (e.open ? null : onClose())}
+      placement="start"
+    >
+      <DrawerBackdrop />
+      <DrawerContent {...settingStyles.settingUI.drawerContent}>
+        <DrawerHeader {...settingStyles.settingUI.drawerHeader}>
+          <DrawerTitle {...settingStyles.settingUI.drawerTitle}>Settings</DrawerTitle>
+          <DrawerCloseTrigger {...settingStyles.settingUI.closeButton}>
+            <CloseButton size="sm" color="white" />
+          </DrawerCloseTrigger>
+        </DrawerHeader>
 
-      <Tabs.Root defaultValue="general" {...sidebarStyles.settingUI.tabs.root}>
-        <Tabs.List>
-          <Tabs.Trigger value="general" {...sidebarStyles.settingUI.tabs.trigger}>General</Tabs.Trigger>
-          <Tabs.Trigger value="live2d" {...sidebarStyles.settingUI.tabs.trigger}>Live2d</Tabs.Trigger>
-          <Tabs.Trigger value="asr" {...sidebarStyles.settingUI.tabs.trigger}>ASR</Tabs.Trigger>
-          <Tabs.Trigger value="tts" {...sidebarStyles.settingUI.tabs.trigger}>TTS</Tabs.Trigger>
-          <Tabs.Trigger value="llm" {...sidebarStyles.settingUI.tabs.trigger}>LLM</Tabs.Trigger>
-          <Tabs.Trigger value="about" {...sidebarStyles.settingUI.tabs.trigger}>About</Tabs.Trigger>
-        </Tabs.List>
+        <DrawerBody>
+          <Tabs.Root
+            defaultValue="general"
+            {...settingStyles.settingUI.tabs.root}
+          >
+            <Tabs.List>
+              <Tabs.Trigger
+                value="general"
+                {...settingStyles.settingUI.tabs.trigger}
+              >
+                General
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="live2d"
+                {...settingStyles.settingUI.tabs.trigger}
+              >
+                Live2d
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="asr"
+                {...settingStyles.settingUI.tabs.trigger}
+              >
+                ASR
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="tts"
+                {...settingStyles.settingUI.tabs.trigger}
+              >
+                TTS
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="llm"
+                {...settingStyles.settingUI.tabs.trigger}
+              >
+                LLM
+              </Tabs.Trigger>
+              <Tabs.Trigger
+                value="input"
+                {...settingStyles.settingUI.tabs.trigger}
+              >
+                About
+              </Tabs.Trigger>
+            </Tabs.List>
 
-        <Tabs.ContentGroup>
-          <Tabs.Content value="general" {...sidebarStyles.settingUI.tabs.content}>
-            <General 
-              onSave={handleSaveCallback}
-              onCancel={handleCancelCallback}
-            />
-          </Tabs.Content>
-          <Tabs.Content value="live2d" {...sidebarStyles.settingUI.tabs.content}>
-            <Live2d
-              onSave={handleSaveCallback}
-              onCancel={handleCancelCallback}
-            />
-          </Tabs.Content>
-          <Tabs.Content value="asr" {...sidebarStyles.settingUI.tabs.content}>
-            <ASR />
-          </Tabs.Content>
-          <Tabs.Content value="tts" {...sidebarStyles.settingUI.tabs.content}>
-            <TTS />
-          </Tabs.Content>
-          <Tabs.Content value="llm" {...sidebarStyles.settingUI.tabs.content}>
-            <LLM />
-          </Tabs.Content>
-          <Tabs.Content value="about" {...sidebarStyles.settingUI.tabs.content}>
-            <About />
-          </Tabs.Content>
-        </Tabs.ContentGroup>
-      </Tabs.Root>
+            <Tabs.ContentGroup>
+              <Tabs.Content
+                value="general"
+                {...settingStyles.settingUI.tabs.content}
+              >
+                <General
+                  onSave={handleSaveCallback}
+                  onCancel={handleCancelCallback}
+                />
+              </Tabs.Content>
+              <Tabs.Content
+                value="live2d"
+                {...settingStyles.settingUI.tabs.content}
+              >
+                <Live2d
+                  onSave={handleSaveCallback}
+                  onCancel={handleCancelCallback}
+                />
+              </Tabs.Content>
+              <Tabs.Content
+                value="asr"
+                {...settingStyles.settingUI.tabs.content}
+              >
+                <ASR />
+              </Tabs.Content>
+              <Tabs.Content
+                value="tts"
+                {...settingStyles.settingUI.tabs.content}
+              >
+                <TTS />
+              </Tabs.Content>
+              <Tabs.Content
+                value="llm"
+                {...settingStyles.settingUI.tabs.content}
+              >
+                <LLM />
+              </Tabs.Content>
+              <Tabs.Content
+                value="about"
+                {...settingStyles.settingUI.tabs.content}
+              >
+                <About />
+              </Tabs.Content>
+            </Tabs.ContentGroup>
+          </Tabs.Root>
+        </DrawerBody>
 
-      <Box {...sidebarStyles.settingUI.footer}>
-        <Button colorPalette="red" onClick={handleCancel}>
-          Cancel
-        </Button>
-        <Button colorPalette="blue" onClick={handleSave}>
-          Save
-        </Button>
-      </Box>
-    </VStack>
+        <DrawerFooter>
+          <Button colorPalette="red" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button colorPalette="blue" onClick={handleSave}>
+            Save
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </DrawerRoot>
   );
 }
 

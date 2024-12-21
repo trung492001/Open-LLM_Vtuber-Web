@@ -1,15 +1,14 @@
 import { 
-  VStack,
-  Field,
-  createListCollection,
   Input,
   Button,
   HStack,
+  Text,
+  Stack,
 } from '@chakra-ui/react';
+import { Field } from '@/components/ui/field';
 import {
   SelectContent,
   SelectItem,
-  SelectLabel,
   SelectRoot,
   SelectTrigger,
   SelectValueText,
@@ -17,6 +16,7 @@ import {
 import { useEffect, useState, useContext } from 'react';
 import { BgUrlContext } from '@/context/bgurl-context';
 import { settingStyles } from './setting-styles';
+import { createListCollection } from '@chakra-ui/react';
 
 interface GeneralProps {
   onSave?: (callback: () => void) => (() => void);
@@ -28,6 +28,41 @@ interface GeneralSettings {
   customBgUrl: string;
   selectedBgUrl: string[];
   backgroundUrl: string;
+}
+
+interface SelectFieldProps {
+  label: string;
+  value: string[];
+  onChange: (value: string[]) => void;
+  collection: ReturnType<typeof createListCollection<{label: string; value: string}>>;
+  placeholder: string;
+}
+
+function SelectField({ label, value, onChange, collection, placeholder }: SelectFieldProps) {
+  return (
+    <Field 
+      {...settingStyles.general.field} 
+      label={<Text {...settingStyles.general.field.label}>{label}</Text>}
+    >
+      <SelectRoot
+        {...settingStyles.general.select.root}
+        collection={collection}
+        value={value}
+        onValueChange={(e) => onChange(e.value)}
+      >
+        <SelectTrigger {...settingStyles.general.select.trigger}>
+          <SelectValueText placeholder={placeholder} />
+        </SelectTrigger>
+        <SelectContent>
+          {collection.items.map((item) => (
+            <SelectItem key={item.value} item={item}>
+              {item.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </SelectRoot>
+    </Field>
+  );
 }
 
 function General({ onSave, onCancel }: GeneralProps) {
@@ -99,9 +134,12 @@ function General({ onSave, onCancel }: GeneralProps) {
     ],
   });
 
-  // const characters = createListCollection<{ label: string; value: string }>({
-  //   items: [],
-  // });
+  const backgroundCollection = createListCollection({ 
+    items: bgUrlContext?.backgroundFiles.map(filename => ({
+      label: String(filename),
+      value: `/bg/${filename}`
+    })) || []
+  });
 
   const handleSwitchCharacter = () => {
     
@@ -112,65 +150,34 @@ function General({ onSave, onCancel }: GeneralProps) {
   };
 
   return (
-    <VStack {...settingStyles.general.container}>
-      <Field.Root {...settingStyles.general.field.root}>
-        <SelectRoot
-          {...settingStyles.general.select.root}
-          collection={languages}
-          value={settings.language}
-          onValueChange={(e) => handleSettingChange('language', e.value)}
-        >
-          <SelectLabel {...settingStyles.general.field.label}>Language</SelectLabel>
-          <SelectTrigger {...settingStyles.general.select.trigger}>
-            <SelectValueText placeholder="Select language" />
-          </SelectTrigger>
-          <SelectContent>
-            {languages.items.map((item) => (
-              <SelectItem key={item.value} item={item}>
-                {item.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectRoot>
-      </Field.Root>
+    <Stack {...settingStyles.general.container}>
+      <SelectField
+        label="Language"
+        value={settings.language}
+        onChange={(value) => handleSettingChange('language', value)}
+        collection={languages}
+        placeholder="Select language"
+      />
 
-      <Field.Root {...settingStyles.general.field.root}>
-        <SelectRoot
-          {...settingStyles.general.select.root}
-          value={settings.selectedBgUrl}
-          onValueChange={(e) => handleSettingChange('selectedBgUrl', e.value)}
-          collection={createListCollection({ 
-            items: bgUrlContext?.backgroundFiles.map(filename => ({
-              label: filename,
-              value: `/bg/${filename}`
-            })) || []
-          })}
-        >
-          <SelectLabel {...settingStyles.general.field.label}>Background Image</SelectLabel>
-          <SelectTrigger {...settingStyles.general.select.trigger}>
-            <SelectValueText placeholder="Select from available backgrounds" />
-          </SelectTrigger>
-          <SelectContent>
-            {(createListCollection({ 
-              items: bgUrlContext?.backgroundFiles.map(filename => ({
-                label: filename.toString(),
-                value: `/bg/${filename}`
-              })) || []
-            })).items.map((item) => (
-              <SelectItem key={item.value} item={item}>
-                {String(item.label)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </SelectRoot>
+      <SelectField
+        label="Background Image"
+        value={settings.selectedBgUrl}
+        onChange={(value) => handleSettingChange('selectedBgUrl', value)}
+        collection={backgroundCollection}
+        placeholder="Select from available backgrounds"
+      />
 
+      <Field 
+        {...settingStyles.general.field}
+        label={<Text {...settingStyles.general.field.label}>Custom Background URL</Text>}
+      >
         <Input
           {...settingStyles.general.input}
           placeholder="Enter image URL"
           value={settings.customBgUrl}
           onChange={(e) => handleSettingChange('customBgUrl', e.target.value)}
         />
-      </Field.Root>
+      </Field>
 
       <HStack {...settingStyles.general.buttonGroup}>
         <Button
@@ -186,7 +193,7 @@ function General({ onSave, onCancel }: GeneralProps) {
           Save Character
         </Button>
       </HStack>
-    </VStack>
+    </Stack>
   );
 }
 

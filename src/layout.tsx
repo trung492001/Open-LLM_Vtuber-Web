@@ -10,7 +10,7 @@ export const layoutStyles = {
   },
   sidebar: {
     position: 'relative' as const,
-    width: '350px',
+    width: '440px',
     height: '100%',
     bg: 'gray.800',
     borderRight: '1px solid',
