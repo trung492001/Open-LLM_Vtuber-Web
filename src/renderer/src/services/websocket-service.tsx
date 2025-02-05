@@ -18,7 +18,7 @@ export interface Message {
 }
 
 export interface Actions {
-  expressions?: string[] | number [];
+  expressions?: string[] | number[];
   pictures?: string[];
   sounds?: string[];
 }
@@ -63,6 +63,9 @@ class WebSocketService {
 
   private initializeConnection() {
     this.sendMessage({
+      type: 'register-source-client',
+    });
+    this.sendMessage({
       type: 'fetch-backgrounds',
     });
     this.sendMessage({
@@ -74,11 +77,14 @@ class WebSocketService {
     this.sendMessage({
       type: 'create-new-history',
     });
+    this.sendMessage({
+      type: 'fetch-model-info',
+    });
   }
 
   connect(url: string) {
     if (this.ws?.readyState === WebSocket.CONNECTING ||
-        this.ws?.readyState === WebSocket.OPEN) {
+      this.ws?.readyState === WebSocket.OPEN) {
       this.disconnect();
     }
 
